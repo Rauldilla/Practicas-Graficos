@@ -123,8 +123,9 @@ void funTimer(int ignore) {
 }
 
 void drawTeapot() {
+    
     glColor3f(color[0],color[1],color[2]);
     
  // Dibujamos una tetera con modelo de alambre
-    glutWireTeapot(1.0);
+    glutWireTeapot(0.5);
 }
