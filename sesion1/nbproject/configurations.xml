@@ -30,7 +30,7 @@
           </incDir>
         </ccTool>
         <linkerTool>
-          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sesion0</output>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sesion1</output>
           <linkerAddLib>
             <pElem>../libraries/libs</pElem>
           </linkerAddLib>
