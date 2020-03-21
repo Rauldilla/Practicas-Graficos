@@ -15,6 +15,14 @@ GLfloat color[] = {0.75, 0.75, 0.75};
 GLint speed   = 500;
 bool  dibujar = true;
 
+// size gestiona el tamaño de la tetera. Puede cambiar con el tamaño de la pantalla
+GLfloat size = 0.5;
+
+// Las variables x e y alamcenan la dimension original de la pantalla
+// y si esta se modifica, la dimension anterior a la modificacion.
+GLfloat x = 500.0;
+GLfloat y = 500.0;
+
 int main(int argc, char** argv) {
 
  // Inicializamos GLUT
@@ -65,6 +73,16 @@ void funReshape(int w, int h) {
     
     std::cout << "Dimensiones pantalla (pixeles): " << w << "x" << h << "\n";
     
+    if ((w < x) || (h < y)) { // La pantalla es mas PEQUEÑA
+        size -= 0.1;
+    } else { // La pantalla es mas GRANDE
+        size += 0.1;
+    }
+    
+    // Ahora x e y almacenaran la nueva dimension, porque si esta se modifica
+    // asi tenemos la referencia de la dimension anterior. 
+    x = w;
+    y = h;
 }
 
 void funDisplay() {
@@ -123,9 +141,7 @@ void funTimer(int ignore) {
 }
 
 void drawTeapot() {
-    
     glColor3f(color[0],color[1],color[2]);
     
- // Dibujamos una tetera con modelo de alambre
-    glutWireTeapot(0.5);
+    glutWireTeapot(size);
 }
