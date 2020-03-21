@@ -8,6 +8,7 @@ void funReshape(int w, int h);
 void funDisplay();
 void funKeyboard(unsigned char key, int x, int y);
 void funTimer(int value);
+void drawTeapot();
 
 GLfloat color[] = {0.75, 0.75, 0.75};
 
@@ -71,10 +72,8 @@ void funDisplay() {
  // Borramos el buffer de color
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
-    glColor3f(color[0],color[1],color[2]);
     
- // Dibujamos una tetera con modelo de alambre
-    glutWireTeapot(1.0);
+    drawTeapot();
     
  // Intercambiamos los buffers
     glutSwapBuffers();
@@ -121,4 +120,11 @@ void funTimer(int ignore) {
     glutPostRedisplay();
     glutTimerFunc(speed,funTimer,0);
     
+}
+
+void drawTeapot() {
+    glColor3f(color[0],color[1],color[2]);
+    
+ // Dibujamos una tetera con modelo de alambre
+    glutWireTeapot(1.0);
 }
