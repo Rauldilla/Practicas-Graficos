@@ -9,7 +9,7 @@ void funDisplay();
 void funKeyboard(unsigned char key, int x, int y);
 void funTimer(int value);
 
-GLfloat color[] = {0.0, 0.0, 0.0};
+GLfloat color[] = {0.0, 0.0, 1.0};
 
 GLint speed   = 500;
 bool  dibujar = true;
@@ -74,7 +74,7 @@ void funDisplay() {
     glColor3f(color[0],color[1],color[2]);
     
  // Dibujamos una tetera con modelo de alambre
-    glutWireTeapot(1.0);
+    glutSolidTeapot(1.0);
     
  // Intercambiamos los buffers
     glutSwapBuffers();
