@@ -9,7 +9,7 @@ void funDisplay();
 void funKeyboard(unsigned char key, int x, int y);
 void funTimer(int value);
 
-GLfloat color[] = {1.0, 1.0, 1.0};
+GLfloat color[] = {0.0, 0.0, 0.0};
 
 GLint speed   = 500;
 bool  dibujar = true;
@@ -69,7 +69,7 @@ void funReshape(int w, int h) {
 void funDisplay() {
     
  // Borramos el buffer de color
-    glClearColor(0.91, 0.91, 0.91, 0.0);
+    glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
     glColor3f(color[0],color[1],color[2]);
     
