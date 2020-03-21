@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
     glutReshapeFunc(funReshape);
     glutDisplayFunc(funDisplay);
     glutKeyboardFunc(funKeyboard);
-    glutTimerFunc(speed,funTimer,0);
+    //glutTimerFunc(speed,funTimer,0);
             
  // Bucle principal
     glutMainLoop();
@@ -69,8 +69,9 @@ void funReshape(int w, int h) {
 void funDisplay() {
     
  // Borramos el buffer de color
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(0.91, 0.91, 0.91, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(color[0],color[1],color[2]);
     
  // Dibujamos una tetera con modelo de alambre
     glutWireTeapot(1.0);
