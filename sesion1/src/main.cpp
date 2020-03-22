@@ -10,7 +10,7 @@ void funKeyboard(unsigned char key, int x, int y);
 void funTimer(int value);
 void drawTeapot();
 
-GLfloat color[] = {0.75, 0.75, 0.75};
+GLfloat color[] = {0.0, 0.0, 1.0};
 
 GLint speed   = 500;
 bool  dibujar = true;
@@ -77,6 +77,12 @@ void funReshape(int w, int h) {
         size -= 0.1;
     } else { // La pantalla es mas GRANDE
         size += 0.1;
+    }
+    
+    if (w < x) {
+        color[2] -= 0.1;
+    } else {
+        color[2] += 0.1;
     }
     
     // Ahora x e y almacenaran la nueva dimension, porque si esta se modifica
