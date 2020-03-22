@@ -109,8 +109,16 @@ void funDisplay() {
     float fovy   = 90.0;
     float nplane =  0.1;
     float fplane = 25.0;
+    
+    // Ortho
+    float right  = 4.0;
+    float left   =-4.0;
+    float top    = 4.0;
+    float bottom =-4.0;
+    
     float aspect = (float)w/(float)h;
-    glm::mat4 P  = glm::perspective(glm::radians(fovy), aspect, nplane, fplane); 
+    //glm::mat4 P  = glm::perspective(glm::radians(fovy), aspect, nplane, fplane); 
+    glm::mat4 P = glm::ortho(left, right, bottom, top, nplane, fplane);
 
  // Matriz V
     glm::vec3 pos   (0.0, 0.0,  0.0);
