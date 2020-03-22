@@ -34,6 +34,7 @@ void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat
    
 // Modelos
    Model model;
+   Model model2;
    
 // Viewport
    int w = 500;
@@ -89,6 +90,7 @@ void funInit() {
     
  // Modelos
     model.initModel("resources/models/cube.obj");
+    model2.initModel("resources/models/triangle.obj");
     
 }
 
@@ -142,10 +144,17 @@ void funDisplay() {
     glm::mat4 S = glm::scale    (I, glm::vec3(scale,scale,scale));
     glm::mat4 R = glm::rotate   (I, glm::radians(theta), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, -2.0, -5.0));
-    glm::mat4 M = T*R*S;    
+    glm::mat4 M = T*R*S; 
+    
+ // Matriz N
+    glm::mat4 VAG = glm::scale    (I, glm::vec3(scale,scale,scale)); 
+    glm::mat4 VAGT = glm::translate(I, glm::vec3(0.0, -2.0, -3.0));
+    
+    glm::mat4 N = VAGT*R*VAG;   
     
  // Dibujamos la escena
     drawObject(model,glm::vec3(1.0, 0.0, 0.0),P,V,M);
+    drawObject(model2,glm::vec3(0.0, 1.0, 0.0),P,V,N);
     
  // Intercambiamos los buffers
     glutSwapBuffers();
