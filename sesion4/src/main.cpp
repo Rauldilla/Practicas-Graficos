@@ -21,6 +21,11 @@ std::string toString(const int &i) {
 void funInit();
 void funReshape(int w, int h);
 void funDisplay();
+void funKeyboard(unsigned char key, int x, int y);
+void SpecialInput(int key, int x, int y);
+
+float rotateCube = 0;
+GLfloat camXMovement = 0;
 
 void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
@@ -64,6 +69,8 @@ int main(int argc, char** argv) {
  // Configuración CallBacks
     glutReshapeFunc(funReshape);
     glutDisplayFunc(funDisplay);
+    glutKeyboardFunc(funKeyboard);
+    glutSpecialFunc(SpecialInput);
           
  // Bucle principal
     glutMainLoop();
@@ -94,6 +101,9 @@ void funReshape(int wnew, int hnew) {
     w = wnew;
     h = hnew;
     
+    //polla += 0.1;
+    std::cout << "polla: " << rotateCube << "\n";
+    
 }
 
 void funDisplay() {
@@ -110,25 +120,25 @@ void funDisplay() {
     float nplane =  0.1;
     float fplane = 25.0;
     
-    // Ortho
+ // Ortho
     float right  = 4.0;
     float left   =-4.0;
     float top    = 4.0;
     float bottom =-4.0;
     
     float aspect = (float)w/(float)h;
-    //glm::mat4 P  = glm::perspective(glm::radians(fovy), aspect, nplane, fplane); 
-    glm::mat4 P = glm::ortho(left, right, bottom, top, nplane, fplane);
+    glm::mat4 P  = glm::perspective(glm::radians(fovy), aspect, nplane, fplane); 
+    //glm::mat4 P = glm::ortho(left, right, bottom, top, nplane, fplane);
 
  // Matriz V
-    glm::vec3 pos   (0.0, 0.0,  0.0);
-    glm::vec3 lookat(0.0, 0.0, -1.0);
+    glm::vec3 pos   (0.0, 0.0, 0.0);
+    glm::vec3 lookat(camXMovement, 0.0, -1.0);
     glm::vec3 up    (0.0, 1.0,  0.0);
     glm::mat4 V = glm::lookAt(pos, lookat, up);
 
  // Matriz M
     float scale =  1.0;
-    float theta = 20.0;
+    float theta = rotateCube;
     glm::mat4 S = glm::scale    (I, glm::vec3(scale,scale,scale));
     glm::mat4 R = glm::rotate   (I, glm::radians(theta), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, -2.0, -5.0));
@@ -153,4 +163,27 @@ void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat
     shaders.setVec3("uColor",glm::vec3(1.0, 1.0, 1.0));
     model.renderModel(GL_LINE);
     
+}
+
+void funKeyboard(unsigned char key, int x, int y) {
+    
+    switch(key) {
+        case 'r':
+            rotateCube += 0.5;
+            break;
+    }
+    glutPostRedisplay();
+        
+}
+
+void SpecialInput(int key, int x, int y) {
+    switch(key) {
+        case GLUT_KEY_RIGHT:
+            camXMovement += 0.1;
+            break;
+        case GLUT_KEY_LEFT:
+            camXMovement -= 0.1;
+            break;
+    }
+    glutPostRedisplay();
 }
