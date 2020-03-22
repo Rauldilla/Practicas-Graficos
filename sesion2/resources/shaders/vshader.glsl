@@ -15,8 +15,8 @@ void main() {
     float nplane =  0.1;
     float fplane = 500.0;
     mat4 P =  mat4(1.0);
-    P[0].x =  1.0/tan(fovy*M_PI/360.0);
-    P[1].y =  1.0/tan(fovy*M_PI/360.0);
+    P[0].x =  4.0/tan(fovy*M_PI/360.0);
+    P[1].y =  4.0/tan(fovy*M_PI/360.0);
     P[2].z = -(fplane + nplane) / (fplane - nplane);
     P[2].w = -1.0;
     P[3].z = -2.0 * fplane * nplane / (fplane - nplane);
