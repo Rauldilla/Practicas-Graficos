@@ -27,9 +27,9 @@ void main() {
 
  // Matriz M
     mat4 M = mat4(1.0);
-    M[3].x =   -5.0;
+    M[3].x =   0.0;
     M[3].y =   0.0;
-    M[3].z = -10.0;
+    M[3].z = -5.0;
 
     gl_Position = P*V*M * vec4(inPosition,1);
 
