@@ -1,4 +1,4 @@
-/*#include <iostream>
+#include <iostream>
 #include <ogl/glew.h>
 #include <ogl/freeglut.h>
 
@@ -163,7 +163,8 @@ void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 void drawAspa(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, -1.0, 0.0));
-    drawObject(modelTriangle,glm::vec3(1.0, 0.0, 0.0),P,V,M*T);
+    glm::mat4 SAspa = glm::scale(I, glm::vec3(0.4, 0.8, 0.0));
+    drawObject(modelTriangle,glm::vec3(1.0, 0.0, 0.0),P,V,M*T*SAspa);
 
 }
 
@@ -192,4 +193,3 @@ void funSpecial(int key, int x, int y) {
     glutPostRedisplay();
     
 }
-*/

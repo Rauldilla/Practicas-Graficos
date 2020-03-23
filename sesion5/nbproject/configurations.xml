@@ -2,14 +2,13 @@
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="src" displayName="src" projectFiles="true">
-      <itemPath>C:/Github/Practicas-Graficos/sesion5/src/Model.cpp</itemPath>
-      <itemPath>C:/Github/Practicas-Graficos/sesion5/src/Model.h</itemPath>
-      <itemPath>C:/Github/Practicas-Graficos/sesion5/src/Shaders.cpp</itemPath>
-      <itemPath>C:/Github/Practicas-Graficos/sesion5/src/Shaders.h</itemPath>
-      <itemPath>C:/Github/Practicas-Graficos/sesion5/src/Texture.cpp</itemPath>
-      <itemPath>C:/Github/Practicas-Graficos/sesion5/src/Texture.h</itemPath>
-      <itemPath>C:/Github/Practicas-Graficos/sesion5/src/main_parte1.cpp</itemPath>
-      <itemPath>C:/Github/Practicas-Graficos/sesion5/src/main_parte2.cpp</itemPath>
+      <itemPath>src/Model.cpp</itemPath>
+      <itemPath>src/Model.h</itemPath>
+      <itemPath>src/Shaders.cpp</itemPath>
+      <itemPath>src/Shaders.h</itemPath>
+      <itemPath>src/Texture.cpp</itemPath>
+      <itemPath>src/Texture.h</itemPath>
+      <itemPath>src/main_parte2.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -44,45 +43,19 @@
           <commandLine>-lopengl32 -lglu32 -lglew32 -lfreeglut -lassimp -lfreeimage</commandLine>
         </linkerTool>
       </compileType>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Model.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="src/Model.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Model.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="src/Model.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Shaders.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="src/Shaders.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Shaders.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="src/Shaders.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Texture.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="src/Texture.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Texture.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="src/Texture.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/main_parte1.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/main_parte2.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="src/main_parte2.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -105,45 +78,19 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Model.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="src/Model.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Model.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="src/Model.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Shaders.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="src/Shaders.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Shaders.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="src/Shaders.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Texture.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="src/Texture.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/Texture.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="src/Texture.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/main_parte1.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="C:/Github/Practicas-Graficos/sesion5/src/main_parte2.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
+      <item path="src/main_parte2.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>
