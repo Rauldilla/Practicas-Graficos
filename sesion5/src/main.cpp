@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 #include <ogl/glew.h>
 #include <ogl/freeglut.h>
 
@@ -27,9 +27,6 @@ void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat
 void drawSuelo (glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawAspa  (glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawCilindro (glm::mat4 P, glm::mat4 V, glm::mat4 T, glm::mat4 M);
-void drawMolino(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void funTimer(int value);
 
 // Shaders
    Shaders shaders;
@@ -37,7 +34,6 @@ void funTimer(int value);
 // Modelos
    Model modelPlane;
    Model modelTriangle;
-   Model modelCilindro;
    
 // Viewport
    int w = 500;
@@ -46,8 +42,6 @@ void funTimer(int value);
 // Animaciones
    float desZ = 0.0;
    float rotZ = 0.0;
-   float speed = 10;
-   float rotY = 0.0;
       
 int main(int argc, char** argv) {
 
@@ -79,7 +73,6 @@ int main(int argc, char** argv) {
     glutReshapeFunc(funReshape);
     glutDisplayFunc(funDisplay);
     glutSpecialFunc(funSpecial);
-    glutTimerFunc(speed,funTimer,0);
               
  // Bucle principal
     glutMainLoop();
@@ -99,7 +92,6 @@ void funInit() {
  // Modelos
     modelPlane.initModel("resources/models/plane.obj");
     modelTriangle.initModel("resources/models/triangle.obj");
-    modelCilindro.initModel("resources/models/cylinder.obj");
     
 }
 
@@ -131,7 +123,7 @@ void funDisplay() {
     glm::mat4 P  = glm::perspective(glm::radians(fovy), aspect, nplane, fplane); 
 
  // Matriz de Vista V (Cámara)
-    glm::vec3 pos   (0.0, 3.0, 10.0);
+    glm::vec3 pos   (0.0, 0.0, 10.0);
     glm::vec3 lookat(0.0, 0.0,  0.0);
     glm::vec3 up    (0.0, 1.0,  0.0);
     glm::mat4 V = glm::lookAt(pos, lookat, up);
@@ -139,35 +131,13 @@ void funDisplay() {
  // Dibujamos la escena
     drawSuelo(P,V,I);
     
-    glm::mat4 R = glm::rotate   (I, glm::radians(rotY), glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.0, desZ));
-
-    drawMolino(P, V, T*R);
+    glm::mat4 R = glm::rotate   (I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.0, desZ));
+    drawHelice(P,V,T*R);
     
  // Intercambiamos los buffers
     glutSwapBuffers();
     
-}
-
-void drawMolino(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-    drawHelice(P,V,M);
-    
-    glm::mat4 Tc = glm::translate(I, glm::vec3(0.0, 0.0, desZ));
-    drawCilindro(P,V,Tc,M);
-}
-
-void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-
-    glm::mat4 R = glm::rotate   (I, glm::radians(rotZ), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 T = glm::translate(I, glm::vec3(0.0f, 0.0f, 0.1f));
-    M = M*T*R;
-    
-    //glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 R120 = glm::rotate(I, glm::radians(120.0f), glm::vec3(0.0, 0.0, 1.0));
-    drawAspa(P,V,M);
-    drawAspa(P,V,M*R120);
-    drawAspa(P,V,M*R120*R120);
-
 }
 
 void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -190,19 +160,21 @@ void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 }
 
-void drawCilindro (glm::mat4 P, glm::mat4 V, glm::mat4 Tc, glm::mat4 M) {
-    
-    glm::mat4 Sc = glm::scale(I, glm::vec3(0.1, 2.0, 1.0));
-    drawObject(modelCilindro, glm::vec3(0.0, 1.0, 0.0), P, V, Tc*Sc);
-    
-}
-
 void drawAspa(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, -1.0, 0.0));
-    glm::mat4 SAspa = glm::scale(I, glm::vec3(0.4, 0.8, 0.0));
-    drawObject(modelTriangle,glm::vec3(1.0, 0.0, 0.0),P,V,M*T*SAspa);
+    drawObject(modelTriangle,glm::vec3(1.0, 0.0, 0.0),P,V,M*T);
 
+}
+
+void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    
+    glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+    drawAspa(P,V,M);
+    drawAspa(P,V,M*R90);
+    drawAspa(P,V,M*R90*R90);
+    drawAspa(P,V,M*R90*R90*R90);
+    
 }
     
 void funSpecial(int key, int x, int y) {
@@ -210,8 +182,8 @@ void funSpecial(int key, int x, int y) {
     switch(key) {
         case GLUT_KEY_UP:    desZ -= 0.1;   break;
         case GLUT_KEY_DOWN:  desZ += 0.1;   break;
-        case GLUT_KEY_LEFT:  rotY += 5.0;   break;
-        case GLUT_KEY_RIGHT: rotY -= 5.0;   break;
+        case GLUT_KEY_LEFT:  rotZ += 5.0;   break;
+        case GLUT_KEY_RIGHT: rotZ -= 5.0;   break;
         default:
            desZ = 0.0;   
            rotZ = 0.0;
@@ -220,10 +192,4 @@ void funSpecial(int key, int x, int y) {
     glutPostRedisplay();
     
 }
-
-void funTimer(int value) {
-    rotZ += 0.5;
-    
-    glutPostRedisplay();
-    glutTimerFunc(speed,funTimer,0);
-}
+*/
