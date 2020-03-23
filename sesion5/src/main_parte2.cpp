@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 #include <ogl/glew.h>
 #include <ogl/freeglut.h>
 
@@ -192,3 +192,4 @@ void funSpecial(int key, int x, int y) {
     glutPostRedisplay();
     
 }
+*/
