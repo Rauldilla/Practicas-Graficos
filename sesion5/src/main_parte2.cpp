@@ -171,10 +171,10 @@ void drawAspa(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
     glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 R120 = glm::rotate(I, glm::radians(120.0f), glm::vec3(0.0, 0.0, 1.0));
     drawAspa(P,V,M);
-    drawAspa(P,V,M*R90);
-    drawAspa(P,V,M*R90*R90);
-    drawAspa(P,V,M*R90*R90*R90);
+    drawAspa(P,V,M*R120);
+    drawAspa(P,V,M*R120*R120);
     
 }
     
