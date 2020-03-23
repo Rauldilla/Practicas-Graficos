@@ -27,6 +27,7 @@ void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat
 void drawSuelo (glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawAspa  (glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void funTimer(int value);
 
 // Shaders
    Shaders shaders;
@@ -42,6 +43,7 @@ void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 // Animaciones
    float desZ = 0.0;
    float rotZ = 0.0;
+   float speed = 10;
       
 int main(int argc, char** argv) {
 
@@ -73,6 +75,7 @@ int main(int argc, char** argv) {
     glutReshapeFunc(funReshape);
     glutDisplayFunc(funDisplay);
     glutSpecialFunc(funSpecial);
+    glutTimerFunc(speed,funTimer,0);
               
  // Bucle principal
     glutMainLoop();
@@ -170,6 +173,12 @@ void drawAspa(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
+    // Movimiento de la hélice
+    glm::mat4 R = glm::rotate   (I, glm::radians(rotZ), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0f, 0.0f, desZ));
+    M = M*T*R;
+    
+    // Dibujar aspa
     glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 R120 = glm::rotate(I, glm::radians(120.0f), glm::vec3(0.0, 0.0, 1.0));
     drawAspa(P,V,M);
@@ -192,4 +201,11 @@ void funSpecial(int key, int x, int y) {
     }
     glutPostRedisplay();
     
+}
+
+void funTimer(int value) {
+    rotZ += 0.5;
+    
+    glutPostRedisplay();
+    glutTimerFunc(speed,funTimer,0);
 }
