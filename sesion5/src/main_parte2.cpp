@@ -26,7 +26,7 @@ void funSpecial(int key, int x, int y);
 void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawSuelo (glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawAspa  (glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 T, glm::mat4 M);
 void funTimer(int value);
 
 // Shaders
@@ -136,7 +136,8 @@ void funDisplay() {
     
     glm::mat4 R = glm::rotate   (I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.0, desZ));
-    drawHelice(P,V,T*R);
+    
+    drawHelice(P,V,T,T*R);
     
  // Intercambiamos los buffers
     glutSwapBuffers();
@@ -171,11 +172,11 @@ void drawAspa(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 }
 
-void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 T, glm::mat4 M) {
     
     // Movimiento de la hélice
     glm::mat4 R = glm::rotate   (I, glm::radians(rotZ), glm::vec3(0.0f, 0.0f, 1.0f));
-    glm::mat4 T = glm::translate(I, glm::vec3(0.0f, 0.0f, desZ));
+    //glm::mat4 T = glm::translate(I, glm::vec3(0.0f, 0.0f, desZ));
     M = M*T*R;
     
     // Dibujar aspa
