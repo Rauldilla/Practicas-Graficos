@@ -26,7 +26,9 @@ void funSpecial(int key, int x, int y);
 void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawSuelo (glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawAspa  (glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 T, glm::mat4 M);
+void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawCilindro (glm::mat4 P, glm::mat4 V, glm::mat4 T, glm::mat4 M);
+void drawMolino(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void funTimer(int value);
 
 // Shaders
@@ -35,6 +37,7 @@ void funTimer(int value);
 // Modelos
    Model modelPlane;
    Model modelTriangle;
+   Model modelCilindro;
    
 // Viewport
    int w = 500;
@@ -95,6 +98,7 @@ void funInit() {
  // Modelos
     modelPlane.initModel("resources/models/plane.obj");
     modelTriangle.initModel("resources/models/triangle.obj");
+    modelCilindro.initModel("resources/models/cylinder.obj");
     
 }
 
@@ -135,9 +139,9 @@ void funDisplay() {
     drawSuelo(P,V,I);
     
     glm::mat4 R = glm::rotate   (I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.0, desZ));
-    
-    drawHelice(P,V,T,T*R);
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.0, desZ));
+
+    drawMolino(P, V, T*R);
     
  // Intercambiamos los buffers
     glutSwapBuffers();
@@ -164,6 +168,13 @@ void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 }
 
+void drawCilindro (glm::mat4 P, glm::mat4 V, glm::mat4 Tc, glm::mat4 M) {
+    
+    glm::mat4 Sc = glm::scale(I, glm::vec3(0.1, 2.0, 1.0));
+    drawObject(modelCilindro, glm::vec3(0.0, 1.0, 0.0), P, V, Tc*Sc);
+    
+}
+
 void drawAspa(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     glm::mat4 T = glm::translate(I, glm::vec3(0.0, -1.0, 0.0));
@@ -172,20 +183,14 @@ void drawAspa(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 }
 
-void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 T, glm::mat4 M) {
-    
-    // Movimiento de la hélice
-    glm::mat4 R = glm::rotate   (I, glm::radians(rotZ), glm::vec3(0.0f, 0.0f, 1.0f));
-    //glm::mat4 T = glm::translate(I, glm::vec3(0.0f, 0.0f, desZ));
-    M = M*T*R;
-    
-    // Dibujar aspa
-    glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    //glm::mat4 R90 = glm::rotate(I, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 R120 = glm::rotate(I, glm::radians(120.0f), glm::vec3(0.0, 0.0, 1.0));
     drawAspa(P,V,M);
     drawAspa(P,V,M*R120);
     drawAspa(P,V,M*R120*R120);
-    
+
 }
     
 void funSpecial(int key, int x, int y) {
@@ -209,4 +214,11 @@ void funTimer(int value) {
     
     glutPostRedisplay();
     glutTimerFunc(speed,funTimer,0);
+}
+
+void drawMolino(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    drawHelice(P,V,M);
+    
+    glm::mat4 Tc = glm::translate(I, glm::vec3(0.0, 0.0, desZ));
+    drawCilindro(P,V,Tc,M);
 }
