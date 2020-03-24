@@ -106,6 +106,8 @@ void funDisplay() {
     // Dibujamos escena
     drawSuelo(P, V, I);
     
+    // 
+    
     // Intercambiamos los buffers
     glutSwapBuffers();
 }
@@ -118,12 +120,19 @@ void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat
     model.renderModel(GL_FILL);
     glDisable(GL_POLYGON_OFFSET_FILL);
     
-    shaders.setVec3("uColor",glm::vec3(1.0, 1.0, 1.0));
+    shaders.setVec3("uColor",glm::vec3(color.r*0.75,
+                                       color.g*0.75,
+                                       color.b*0.75));
     model.renderModel(GL_LINE);
 }
 
 void drawSuelo (glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
-    glm::mat4 S = glm::scale(I, glm::vec3(4.0, 1.0, 4.0));
-    drawObject(modelPlane, glm::vec3(0.30, 0.30, 0.30), P, V, M*S);
+    // Escala
+    glm::mat4 S = glm::scale(I, glm::vec3(2.0, 1.0, 2.0));
+    // Posición
+    // TODO Checkear que solo la y = 0
+    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.0, 0.0));
+    
+    drawObject(modelPlane, glm::vec3(0.40, 0.40, 0.40), P, V, M*S*T);
 }
