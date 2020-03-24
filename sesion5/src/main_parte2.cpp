@@ -16,7 +16,7 @@ std::string toString(const int &i) {
     return ss.str();
 }
 
-#define I glm::mat4(1.0)
+#define I glm::mat4(0.0)
 
 void funInit();
 void funReshape(int w, int h);
