@@ -22,10 +22,10 @@ void drawSuelo (glm::mat4 P, glm::mat4 V, glm::mat4 M);
     Shaders shaders;
 
 // Modelos
-    Model plane;
-    Model cylinder;
-    Model cone;
-    Model sphere;
+    Model modelPlane;
+    Model modelCylinder;
+    Model modelCone;
+    Model modelSphere;
 
 // Viewport
    int w = 600;
@@ -75,10 +75,10 @@ void funInit() {
     shaders.initShaders("resources/shaders/vshader.glsl","resources/shaders/fshader.glsl");
     
     // Models
-    plane.initModel("resources/models/plane.obj");
-    cylinder.initModel("resources/models/cylinder.obj");
-    cone.initModel("resources/models/cone.obj");
-    sphere.initModel("resources/models/sphere.obj");
+    modelPlane.initModel("resources/models/plane.obj");
+    modelCylinder.initModel("resources/models/cylinder.obj");
+    modelCone.initModel("resources/models/cone.obj");
+    modelSphere.initModel("resources/models/sphere.obj");
 }
  
 void funDisplay() {
@@ -102,4 +102,27 @@ void funDisplay() {
     glm::vec3 lookat(0.0, 0.0,  0.0);
     glm::vec3 up    (0.0, 1.0,  0.0);
     glm::mat4 V = glm::lookAt(pos, lookat, up);
+    
+    // Dibujamos escena
+    drawSuelo(P, V, I);
+    
+    // Intercambiamos los buffers
+    glutSwapBuffers();
+}
+
+void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    shaders.setMat4("uPVM",P*V*M);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    shaders.setVec3("uColor",color);
+    model.renderModel(GL_FILL);
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    
+    shaders.setVec3("uColor",glm::vec3(1.0, 1.0, 1.0));
+    model.renderModel(GL_LINE);
+}
+
+void drawSuelo (glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    
+    glm::mat4 S = glm::scale(I, glm::vec3(4.0, 1.0, 4.0));
+    drawObject(modelPlane, glm::vec3(0.30, 0.30, 0.30), P, V, M*S);
 }
