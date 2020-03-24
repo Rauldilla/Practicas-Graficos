@@ -9,7 +9,7 @@
 #include "Shaders.h"
 #include "Model.h"
 
-#define I glm::mat4(0.0)
+#define I glm::mat4(1.0)
 
 
 void funInit();
@@ -111,6 +111,7 @@ void funDisplay() {
 }
 
 void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+   
     shaders.setMat4("uPVM",P*V*M);
     glEnable(GL_POLYGON_OFFSET_FILL);
     shaders.setVec3("uColor",color);
