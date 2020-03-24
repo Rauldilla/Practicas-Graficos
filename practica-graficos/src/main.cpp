@@ -106,7 +106,22 @@ void funDisplay() {
     // Dibujamos escena
     drawSuelo(P, V, I);
     
-    // 
+    // Cuerpo
+    glm::mat4 SSphere = glm::scale(I, glm::vec3(0.5, 0.2, 0.5));
+    drawObject(modelSphere, glm::vec3(0.0, 1.0, 0.0), P, V, I*SSphere);
+    
+    // Brazos
+    float rotZCilindro = 90.0;
+    float rotYCilindro = 72.0;
+    glm::mat4 RCylinder = glm::rotate   (I, glm::radians(rotZCilindro), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 R72 = glm::rotate   (I, glm::radians(rotYCilindro), glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 SCylinder = glm::scale(I, glm::vec3(0.05, 0.5, 0.05));
+    glm::mat4 TCylinder = glm::translate(I, glm::vec3(0.5, 0.0, 0.0));
+    drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*TCylinder*RCylinder*SCylinder);
+    drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*TCylinder*RCylinder*SCylinder);
+    drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*R72*TCylinder*RCylinder*SCylinder);
+    drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*R72*R72*TCylinder*RCylinder*SCylinder);
+    drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*R72*R72*R72*TCylinder*RCylinder*SCylinder);
     
     // Intercambiamos los buffers
     glutSwapBuffers();
@@ -129,10 +144,10 @@ void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat
 void drawSuelo (glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
     // Escala
-    glm::mat4 S = glm::scale(I, glm::vec3(2.0, 1.0, 2.0));
+    glm::mat4 SPlane = glm::scale(I, glm::vec3(2.0, 1.0, 2.0));
     // Posición
     // TODO Checkear que solo la y = 0
-    glm::mat4 T = glm::translate(I, glm::vec3(0.0, 0.0, 0.0));
+    glm::mat4 TPlane = glm::translate(I, glm::vec3(0.0, 0.0, 0.0));
     
-    drawObject(modelPlane, glm::vec3(0.40, 0.40, 0.40), P, V, M*S*T);
+    drawObject(modelPlane, glm::vec3(0.40, 0.40, 0.40), P, V, M*SPlane*TPlane);
 }
