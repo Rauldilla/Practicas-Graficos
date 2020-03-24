@@ -11,6 +11,7 @@
 
 #define I glm::mat4(1.0)
 
+#define NUM_ARMS 5
 
 void funInit();
 void funDisplay();
@@ -107,21 +108,35 @@ void funDisplay() {
     drawSuelo(P, V, I);
     
     // Cuerpo
-    glm::mat4 SSphere = glm::scale(I, glm::vec3(0.5, 0.2, 0.5));
-    drawObject(modelSphere, glm::vec3(0.0, 1.0, 0.0), P, V, I*SSphere);
+    //glm::mat4 SSphere = glm::scale(I, glm::vec3(0.5, 0.2, 0.5));
+    //drawObject(modelSphere, glm::vec3(0.0, 1.0, 0.0), P, V, I*SSphere);
     
     // Brazos
-    float rotZCilindro = 90.0;
+    float rotZ = 90.0;
     float rotYCilindro = 72.0;
-    glm::mat4 RCylinder = glm::rotate   (I, glm::radians(rotZCilindro), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 RCylinder = glm::rotate   (I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 R72 = glm::rotate   (I, glm::radians(rotYCilindro), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 SCylinder = glm::scale(I, glm::vec3(0.05, 0.5, 0.05));
     glm::mat4 TCylinder = glm::translate(I, glm::vec3(0.5, 0.0, 0.0));
-    drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*TCylinder*RCylinder*SCylinder);
+    
+    // TODO Refactor display arms
+    /*for(int i = 0; i < NUM_ARMS; i++) {
+        glm::mat4 I2 = glm::scale(I, glm::vec3(i, i, i));
+        
+        drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V,
+                I2*R72*TCylinder*RCylinder*SCylinder);
+    }*/
+    /*drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*TCylinder*RCylinder*SCylinder);
     drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*TCylinder*RCylinder*SCylinder);
     drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*R72*TCylinder*RCylinder*SCylinder);
     drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*R72*R72*TCylinder*RCylinder*SCylinder);
-    drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*R72*R72*R72*TCylinder*RCylinder*SCylinder);
+    drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*R72*R72*R72*TCylinder*RCylinder*SCylinder);*/
+    
+    // Blades
+    // TODO Change scale to the correct one
+    glm::mat4 SCone = glm::scale(I, glm::vec3(0.005, 0.06, 0.035));
+    glm::mat4 RCone = glm::rotate   (I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
+    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, I*RCone*SCone);
     
     // Intercambiamos los buffers
     glutSwapBuffers();
