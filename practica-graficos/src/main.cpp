@@ -83,4 +83,23 @@ void funInit() {
  
 void funDisplay() {
     
+    // Borramos el buffer de color
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    // Shaders
+    shaders.useShaders();
+    
+    // Matriz de Proyeccion P (Perspectiva)
+    float fovy   = 30.0;
+    float nplane =  0.1;
+    float fplane = 25.0;
+    float aspect = (float)w/(float)h;
+    glm::mat4 P  = glm::perspective(glm::radians(fovy), aspect, nplane, fplane);
+    
+    // Matriz de Vista V (Camara)
+    glm::vec3 pos   (4.0, 4.0, 4.0);
+    glm::vec3 lookat(0.0, 0.0,  0.0);
+    glm::vec3 up    (0.0, 1.0,  0.0);
+    glm::mat4 V = glm::lookAt(pos, lookat, up);
 }
