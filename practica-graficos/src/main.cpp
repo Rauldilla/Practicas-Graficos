@@ -113,9 +113,9 @@ void funDisplay() {
     
     // Brazos
     float rotZ = 90.0;
-    float rotYCilindro = 72.0;
+    float rotYCylinder = 72.0;
     glm::mat4 RCylinder = glm::rotate   (I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 R72 = glm::rotate   (I, glm::radians(rotYCilindro), glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 R72 = glm::rotate(I, glm::radians(rotYCylinder), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 SCylinder = glm::scale(I, glm::vec3(0.05, 0.5, 0.05));
     glm::mat4 TCylinder = glm::translate(I, glm::vec3(0.5, 0.0, 0.0));
     
@@ -134,9 +134,15 @@ void funDisplay() {
     
     // Blades
     // TODO Change scale to the correct one
+    float rotYCone = 90.0;
     glm::mat4 SCone = glm::scale(I, glm::vec3(0.005, 0.06, 0.035));
-    glm::mat4 RCone = glm::rotate   (I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 RCone = glm::rotate(I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 R90 = glm::rotate(I, glm::radians(rotYCone), glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 TCone = glm::translate(I, glm::vec3(0.5, 0.0, 0.0));
     drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, I*RCone*SCone);
+    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, I*R90*RCone*SCone);
+    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, I*R90*R90*RCone*SCone);
+    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, I*R90*R90*R90*RCone*SCone);
     
     // Intercambiamos los buffers
     glutSwapBuffers();
