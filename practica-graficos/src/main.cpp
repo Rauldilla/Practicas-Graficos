@@ -18,6 +18,7 @@ void funDisplay();
 
 void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawSuelo (glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawHelice (glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
 // Shaders
     Shaders shaders;
@@ -108,8 +109,8 @@ void funDisplay() {
     drawSuelo(P, V, I);
     
     // Cuerpo
-    //glm::mat4 SSphere = glm::scale(I, glm::vec3(0.5, 0.2, 0.5));
-    //drawObject(modelSphere, glm::vec3(0.0, 1.0, 0.0), P, V, I*SSphere);
+    glm::mat4 SSphere = glm::scale(I, glm::vec3(0.5, 0.2, 0.5));
+    drawObject(modelSphere, glm::vec3(0.0, 1.0, 0.0), P, V, I*SSphere);
     
     // Brazos
     float rotZ = 90.0;
@@ -126,23 +127,26 @@ void funDisplay() {
         drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V,
                 I2*R72*TCylinder*RCylinder*SCylinder);
     }*/
-    /*drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*TCylinder*RCylinder*SCylinder);
+    drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*TCylinder*RCylinder*SCylinder);
     drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*TCylinder*RCylinder*SCylinder);
     drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*R72*TCylinder*RCylinder*SCylinder);
     drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*R72*R72*TCylinder*RCylinder*SCylinder);
-    drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*R72*R72*R72*TCylinder*RCylinder*SCylinder);*/
+    drawObject(modelCylinder, glm::vec3(0.0, 0.0, 1.0), P, V, I*R72*R72*R72*R72*TCylinder*RCylinder*SCylinder);
     
     // Blades
     // TODO Change scale to the correct one
-    float rotYCone = 90.0;
-    glm::mat4 SCone = glm::scale(I, glm::vec3(0.005, 0.06, 0.035));
-    glm::mat4 RCone = glm::rotate(I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 R90 = glm::rotate(I, glm::radians(rotYCone), glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 TCone = glm::translate(I, glm::vec3(0.5, 0.0, 0.0));
-    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, I*RCone*SCone);
-    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, I*R90*RCone*SCone);
-    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, I*R90*R90*RCone*SCone);
-    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, I*R90*R90*R90*RCone*SCone);
+    float rotYHelices = 72.0;
+    float colocacion = 45.0;
+    glm::mat4 TConePosition = glm::translate(I, glm::vec3(1.0, 0.0, 0.0));
+    glm::mat4 R72Helices = glm::rotate(I, glm::radians(rotYHelices),glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 colocacionHelices = glm::rotate(I, glm::radians(colocacion),glm::vec3(0.0, 1.0, 0.0));
+    drawHelice(P,V,I*TConePosition*colocacionHelices);
+    drawHelice(P,V,I*R72Helices*TConePosition*colocacionHelices);
+    drawHelice(P,V,I*R72Helices*R72Helices*TConePosition*colocacionHelices);
+    drawHelice(P,V,I*R72Helices*R72Helices*R72Helices*TConePosition*colocacionHelices);
+    drawHelice(P,V,I*R72Helices*R72Helices*R72Helices*R72Helices*TConePosition*colocacionHelices);
+    
+    
     
     // Intercambiamos los buffers
     glutSwapBuffers();
@@ -171,4 +175,18 @@ void drawSuelo (glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 TPlane = glm::translate(I, glm::vec3(0.0, 0.0, 0.0));
     
     drawObject(modelPlane, glm::vec3(0.40, 0.40, 0.40), P, V, M*SPlane*TPlane);
+}
+
+void drawHelice (glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    float rotYCone = 90.0;
+    
+    glm::mat4 SCone = glm::scale(I, glm::vec3(0.005, 0.06, 0.035));
+    glm::mat4 RCone = glm::rotate(I, glm::radians(rotYCone), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 R90 = glm::rotate(I, glm::radians(rotYCone), glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 TCone = glm::translate(I, glm::vec3(0.16, 0.0, 0.0));
+    
+    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, M*TCone*RCone*SCone);
+    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, M*R90*TCone*RCone*SCone);
+    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, M*R90*R90*TCone*RCone*SCone);
+    drawObject(modelCone, glm::vec3(1.0, 0.0, 0.0), P, V, M*R90*R90*R90*TCone*RCone*SCone);
 }
