@@ -111,12 +111,23 @@ void funDisplay() {
     // Dibujamos escena
     drawSuelo(P, V, I);
     
-    // Ejemplo
-    float rotZ = 70.0;
-    glm::mat4 T_vuelo = glm::translate(I, glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 R_cilindro = glm::rotate(I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
+    // APARTADO 4
+    //glm::vec3 pos   (4.0, 2.0, 4.0);
     
-    drawDron(P, V, I*T_vuelo*R_cilindro);
+    /* 3a */
+    /*float rotY = 27.0;
+    glm::mat4 T_vuelo = glm::translate(I, glm::vec3(0.0, 0.5, 0.0));
+    glm::mat4 R_dron = glm::rotate(I, glm::radians(rotY), glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 T_atras = glm::translate(I, glm::vec3(-2.0, 0.0, -2.0));
+    
+    drawDron(P, V, I*T_vuelo*T_atras*R_dron);*/
+    
+    /* 3b */
+    
+    
+    // FIN APARTADO 4
+    
+    drawDron(P, V, I);
     
     // Intercambiamos los buffers
     glutSwapBuffers();
