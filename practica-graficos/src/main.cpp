@@ -11,8 +11,6 @@
 
 #define I glm::mat4(1.0)
 
-#define NUM_ARMS 5
-
 void funInit();
 void funDisplay();
 
@@ -105,7 +103,7 @@ void funDisplay() {
     // Matriz de Vista V (Camara)
     glm::vec3 pos   (4.0, 4.0, 4.0);
     
-    // CÁMARA APARTADO 4
+    // Cámara APARTADO 4
     //glm::vec3 pos   (4.0, 2.0, 4.0);
     
     glm::vec3 lookat(0.0, 0.0,  0.0);
@@ -140,10 +138,11 @@ void funDisplay() {
 
 void drawSuelo (glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
+    /* Configuración del suelo */
     glm::mat4 SPlane = glm::scale(I, glm::vec3(2.0, 1.0, 2.0));
-    // TODO Checkear que solo la y = 0
     glm::mat4 TPlane = glm::translate(I, glm::vec3(0.0, 0.0, 0.0));
     
+    /* Dibuja el suelo */
     drawObject(modelPlano, glm::vec3(0.40, 0.40, 0.40), P, V, M*SPlane*TPlane);
 }
 
@@ -170,12 +169,14 @@ void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     float rotYhelice = 72.0;
     float rotInicial = 45.0;
     
+    /* Configuración de las hélices */
     glm::mat4 R72Helices = glm::rotate(I, glm::radians(rotYhelice),glm::vec3(0.0, 1.0, 0.0));
     // Situar hélices en la punta de los brazos
     glm::mat4 T_helicePos = glm::translate(I, glm::vec3(1.0, 0.0, 0.0));
     // Colocación inicial de las hélices
     glm::mat4 R_rotInicial = glm::rotate(I, glm::radians(rotInicial),glm::vec3(0.0, 1.0, 0.0));
     
+    /* Dibuja las hélices */
     drawHelice(P, V, M*T_helicePos*R_rotInicial);
     drawHelice(P, V, M*R72Helices*T_helicePos*R_rotInicial);
     drawHelice(P, V, M*R72Helices*R72Helices*T_helicePos*R_rotInicial);
@@ -185,7 +186,10 @@ void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
+    /* Configuración del cuerpo */
     glm::mat4 S_esfera = glm::scale(I, glm::vec3(0.5, 0.2, 0.5));
+    
+    /* Dibuja el cuerpo */
     drawObject(modelEsfera, glm::vec3(0.0, 1.0, 0.0), P, V, M*S_esfera);
 }
 
@@ -198,9 +202,10 @@ void drawBrazos(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 R_cilindro = glm::rotate(I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 R72 = glm::rotate(I, glm::radians(rotY), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 S_cilindro = glm::scale(I, glm::vec3(0.05, 0.5, 0.05));
-    // TODO moverlo fuera
+    // TODO mover T_cilindro fuera del método
     glm::mat4 T_cilindro = glm::translate(I, glm::vec3(0.5, 0.0, 0.0));
     
+    /* Dibuja cinco brazos */
     // TODO Refactorizar
     drawObject(modelCilindro, glm::vec3(0.0, 0.0, 1.0), P, V,
             M*T_cilindro*R_cilindro*S_cilindro);
@@ -228,7 +233,8 @@ void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 R90 = glm::rotate(I, glm::radians(rotY), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 T_cono = glm::translate(I, glm::vec3(0.16, 0.0, 0.0));
     
-    // Dibuja cuatro aspas
+    /* Dibuja cuatro aspas */
+    // TODO Refactorizar
     drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M*T_cono*R_cono*S_cono);
     drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M*R90*T_cono*R_cono*S_cono);
     drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M*R90*R90*T_cono*R_cono*S_cono);
