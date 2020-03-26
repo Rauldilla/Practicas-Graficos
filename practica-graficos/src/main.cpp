@@ -228,7 +228,7 @@ void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     float rotY = 90.0;
     
     /* Configuración de aspas */
-    glm::mat4 S_cono = glm::scale(I, glm::vec3(0.005, 0.06, 0.035));
+    glm::mat4 S_cono = glm::scale(I, glm::vec3(0.01116484395, 0.06, 0.03721614651));
     glm::mat4 R_cono = glm::rotate(I, glm::radians(rotY), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 R90 = glm::rotate(I, glm::radians(rotY), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 T_cono = glm::translate(I, glm::vec3(0.16, 0.0, 0.0));
