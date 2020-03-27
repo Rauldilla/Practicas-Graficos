@@ -163,8 +163,11 @@ void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat
 
 void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
+    // Variables para situar brazos, articulaciones y soportes en el lado
+    // y con el ángulo correctos
     float rotY = 72.0;
     glm::mat4 R72 = glm::rotate(I, glm::radians(rotY),glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 T = glm::translate(I, glm::vec3(1.0, 0.0, 0.0));
     
     /* Dibuja el cuerpo */
     drawCuerpo(P, V, M);
@@ -175,27 +178,22 @@ void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     /* Configuración de las hélices */
     float rotInicial = 45.0;
     
-    // Situar hélices en la punta de los brazos
-    glm::mat4 T_helicePos = glm::translate(I, glm::vec3(1.0, 0.0, 0.0));
     // Colocación inicial de las hélices
     glm::mat4 R_rotInicial = glm::rotate(I, glm::radians(rotInicial),glm::vec3(0.0, 1.0, 0.0));
     
     /* Dibuja las hélices */
-    drawHelice(P, V, M*T_helicePos*R_rotInicial);
-    drawHelice(P, V, M*R72*T_helicePos*R_rotInicial);
-    drawHelice(P, V, M*R72*R72*T_helicePos*R_rotInicial);
-    drawHelice(P, V, M*R72*R72*R72*T_helicePos*R_rotInicial);
-    drawHelice(P, V, M*R72*R72*R72*R72*T_helicePos*R_rotInicial);
-    
-    /* Configuracion de las articulaciones */
-    glm::mat4 T_soportePos = glm::translate(I, glm::vec3(1.0, 0.0, 0.0));
+    drawHelice(P, V, M*T*R_rotInicial);
+    drawHelice(P, V, M*R72*T*R_rotInicial);
+    drawHelice(P, V, M*R72*R72*T*R_rotInicial);
+    drawHelice(P, V, M*R72*R72*R72*T*R_rotInicial);
+    drawHelice(P, V, M*R72*R72*R72*R72*T*R_rotInicial);
     
     /* Dibuja las articulaciones */
-    drawArticulacion(P,V,M*T_soportePos);
-    drawArticulacion(P,V,M*R72*T_soportePos);
-    drawArticulacion(P,V,M*R72*R72*T_soportePos);
-    drawArticulacion(P,V,M*R72*R72*R72*T_soportePos);
-    drawArticulacion(P,V,M*R72*R72*R72*R72*T_soportePos);
+    drawArticulacion(P,V,M*T);
+    drawArticulacion(P,V,M*R72*T);
+    drawArticulacion(P,V,M*R72*R72*T);
+    drawArticulacion(P,V,M*R72*R72*R72*T);
+    drawArticulacion(P,V,M*R72*R72*R72*R72*T);
 }
 
 void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
