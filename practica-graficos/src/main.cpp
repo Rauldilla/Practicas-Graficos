@@ -20,6 +20,7 @@ void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawBrazos(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
 // Shaders
@@ -173,6 +174,13 @@ void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     drawArticulacion(P,V,M*R72*R72*T);
     drawArticulacion(P,V,M*R72*R72*R72*T);
     drawArticulacion(P,V,M*R72*R72*R72*R72*T);
+    
+    /* Dibuja los soportes */
+    drawSoporte(P,V,M*T);
+    drawSoporte(P,V,M*R72*T);
+    drawSoporte(P,V,M*R72*R72*T);
+    drawSoporte(P,V,M*R72*R72*R72*T);
+    drawSoporte(P,V,M*R72*R72*R72*R72*T);
 }
 
 void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -220,6 +228,15 @@ void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
     /* Dibuja el cuerpo */
     drawObject(modelEsfera, glm::vec3(1.0, 0.0, 1.0), P, V, M*S_esfera);
+}
+
+void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    
+    glm::mat4 S_cilindro = glm::scale(I, glm::vec3(0.025, 0.1, 0.025));
+    glm::mat4 T_cilindro = glm::translate(I, glm::vec3(0.0, 1.0, 0.0));
+    
+    drawObject(modelCilindro, glm::vec3(1.0, 1.0, 0.0), P, V,
+            M*S_cilindro*T_cilindro);
 }
 
 void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
