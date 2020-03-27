@@ -104,9 +104,6 @@ void funDisplay() {
     // Matriz de Vista V (Camara)
     glm::vec3 pos   (4.0, 4.0, 4.0);
     
-    // Cámara APARTADO 4
-    //glm::vec3 pos   (4.0, 2.0, 4.0);
-    
     glm::vec3 lookat(0.0, 0.0,  0.0);
     glm::vec3 up    (0.0, 1.0,  0.0);
     glm::mat4 V = glm::lookAt(pos, lookat, up);
@@ -114,24 +111,6 @@ void funDisplay() {
     // Dibujamos escena
     drawSuelo(P, V, I);
     drawDron(P, V, I);
-    
-    // ------------------- APARTADO 4 -------------------
-    // 3a
-    /*float rotY = 27.0;
-    glm::mat4 T_vuelo = glm::translate(I, glm::vec3(0.0, 0.5, 0.0));
-    glm::mat4 R_dron = glm::rotate(I, glm::radians(rotY), glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 T_atras = glm::translate(I, glm::vec3(-2.0, 0.0, -2.0));
-    
-    drawDron(P, V, I*T_vuelo*T_atras*R_dron);*/
-    
-    // 3b
-    /*float rotZ = 30.0;
-    
-    glm::mat4 R_giro = glm::rotate(I, glm::radians(rotZ), glm::vec3(1.0, 0.0, 1.0));
-    glm::mat4 S_dron = glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
-    
-    drawDron(P, V, I*T_vuelo*T_atras*R_giro*R_dron*S_dron);*/
-    // ------------------- FIN APARTADO 4 -------------------
     
     // Intercambiamos los buffers
     glutSwapBuffers();
