@@ -13,6 +13,7 @@
 
 void funInit();
 void funDisplay();
+void funTimer(int value);
 
 void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
@@ -36,6 +37,9 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 // Viewport
    int w = 600;
    int h = 600;
+   
+   GLint speed = 20;
+   float rotAnim = 0;
 
 int main(int argc, char** argv) {
     // Inicializamos GLUT
@@ -64,6 +68,7 @@ int main(int argc, char** argv) {
     
     // Callbacks
     glutDisplayFunc(funDisplay);
+    glutTimerFunc(speed,funTimer,0);
     
     // Bucle principal
     glutMainLoop();
@@ -258,13 +263,22 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     /* Configuración de aspas */
     glm::mat4 S_cono = glm::scale(I, glm::vec3(0.01116484395, 0.06, 0.03721614651));
     glm::mat4 R_cono = glm::rotate(I, glm::radians(rotY), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 R_anim = glm::rotate(I, glm::radians(rotAnim), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 R90 = glm::rotate(I, glm::radians(rotY), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 T_cono = glm::translate(I, glm::vec3(0.16, 0.0, 0.0));
     
     /* Dibuja cuatro aspas */
     // TODO Refactorizar
-    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M*T_cono*R_cono*S_cono);
-    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M*R90*T_cono*R_cono*S_cono);
-    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M*R90*R90*T_cono*R_cono*S_cono);
-    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M*R90*R90*R90*T_cono*R_cono*S_cono);
+    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M*R_anim*T_cono*R_cono*S_cono);
+    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M*R_anim*R90*T_cono*R_cono*S_cono);
+    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M*R_anim*R90*R90*T_cono*R_cono*S_cono);
+    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M*R_anim*R90*R90*R90*T_cono*R_cono*S_cono);
+}
+void funTimer(int ignore) {
+    
+    rotAnim += 5;
+    
+    glutPostRedisplay();
+    glutTimerFunc(speed,funTimer,0);
+    
 }
