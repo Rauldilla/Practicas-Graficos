@@ -42,6 +42,7 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M);
    GLint speed = 20;
    float animRotAspa = 0;
    float animRotDron = 0;
+   float animRotSoportes = 0;
 
 int main(int argc, char** argv) {
     // Inicializamos GLUT
@@ -217,12 +218,8 @@ void drawHelices(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 R72 = glm::rotate(I, glm::radians(rotY),glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 T = glm::translate(I, glm::vec3(1.0, 0.0, 0.0));
     
-    /* Dibuja los soportes */
-    drawSoporte(P,V,M*T);
-    drawSoporte(P,V,M*R72*T);
-    drawSoporte(P,V,M*R72*R72*T);
-    drawSoporte(P,V,M*R72*R72*R72*T);
-    drawSoporte(P,V,M*R72*R72*R72*R72*T);
+    glm::mat4 R = glm::rotate(I, glm::radians(animRotSoportes),
+                                    glm::vec3(0.0, 0.0, 1.0));
     
     /* Dibuja las articulaciones */
     drawArticulacion(P,V,M*T);
@@ -231,19 +228,26 @@ void drawHelices(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     drawArticulacion(P,V,M*R72*R72*R72*T);
     drawArticulacion(P,V,M*R72*R72*R72*R72*T);
     
+    /* Dibuja los soportes */
+    drawSoporte(P,V,M*T*R);
+    drawSoporte(P,V,M*R72*T*R);
+    drawSoporte(P,V,M*R72*R72*T*R);
+    drawSoporte(P,V,M*R72*R72*R72*T*R);
+    drawSoporte(P,V,M*R72*R72*R72*R72*T*R);
+    
     /* Configuración de las aspas */
     float rotInicial = 45.0;
     
     // Colocación inicial de las aspas
-    glm::mat4 T_helice = glm::translate(I, glm::vec3(1.0, 0.20, 0.0));
+    glm::mat4 T_helice = glm::translate(I, glm::vec3(0.0, 0.20, 0.0));
     glm::mat4 R_rotInicial = glm::rotate(I, glm::radians(rotInicial),glm::vec3(0.0, 1.0, 0.0));
     
     /* Dibuja las aspas */
-    drawAspas(P, V, M*T_helice*R_rotInicial);
-    drawAspas(P, V, M*R72*T_helice*R_rotInicial);
-    drawAspas(P, V, M*R72*R72*T_helice*R_rotInicial);
-    drawAspas(P, V, M*R72*R72*R72*T_helice*R_rotInicial);
-    drawAspas(P, V, M*R72*R72*R72*R72*T_helice*R_rotInicial);
+    drawAspas(P, V, M*T*R*T_helice*R_rotInicial);
+    drawAspas(P, V, M*R72*T*R*T_helice*R_rotInicial);
+    drawAspas(P, V, M*R72*R72*T*R*T_helice*R_rotInicial);
+    drawAspas(P, V, M*R72*R72*R72*T*R*T_helice*R_rotInicial);
+    drawAspas(P, V, M*R72*R72*R72*R72*T*R*T_helice*R_rotInicial);
 }
 
 void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -283,7 +287,7 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 }
 void funTimer(int ignore) {
     
-    animRotAspa -= 5;
+    animRotAspa += 5;
     
     glutPostRedisplay();
     glutTimerFunc(speed,funTimer,0);
@@ -293,12 +297,23 @@ void funTimer(int ignore) {
 void funKeyboard(unsigned char key, int x, int y) {
     
     switch(key) {
-        // TODO ver si la rotación es la que se pide
         case 'r':
             animRotDron -= 5.0;
             break;
         case 'R':
             animRotDron += 5.0;
+            break;
+        case 'a':
+            if(animRotSoportes <= 0 && animRotSoportes > -180) {
+                std::cout << animRotSoportes << "\n";
+                animRotSoportes -= 10;
+            }
+            break;
+        case 'A':
+            if(animRotSoportes < 0 && animRotSoportes >= -180) {
+                std::cout << animRotSoportes << "\n";
+                animRotSoportes += 10;
+            }
             break;
     }
     glutPostRedisplay();
