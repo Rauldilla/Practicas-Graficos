@@ -276,7 +276,7 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 }
 void funTimer(int ignore) {
     
-    rotAnim += 5;
+    rotAnim -= 5;
     
     glutPostRedisplay();
     glutTimerFunc(speed,funTimer,0);
