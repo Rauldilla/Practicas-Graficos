@@ -306,13 +306,13 @@ void funKeyboard(unsigned char key, int x, int y) {
         case 'a':
             if(animRotSoportes <= 0 && animRotSoportes > -180) {
                 std::cout << animRotSoportes << "\n";
-                animRotSoportes -= 10;
+                animRotSoportes -= 5;
             }
             break;
         case 'A':
             if(animRotSoportes < 0 && animRotSoportes >= -180) {
                 std::cout << animRotSoportes << "\n";
-                animRotSoportes += 10;
+                animRotSoportes += 5;
             }
             break;
     }
