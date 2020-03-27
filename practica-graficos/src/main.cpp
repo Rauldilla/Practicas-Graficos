@@ -14,6 +14,7 @@
 void funInit();
 void funDisplay();
 void funTimer(int value);
+void funKeyboard(unsigned char key, int x, int y);
 
 void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
@@ -39,7 +40,8 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M);
    int h = 600;
    
    GLint speed = 20;
-   float rotAnim = 0;
+   float animRotAspa = 0;
+   float animRotDron = 0;
 
 int main(int argc, char** argv) {
     // Inicializamos GLUT
@@ -69,6 +71,7 @@ int main(int argc, char** argv) {
     // Callbacks
     glutDisplayFunc(funDisplay);
     glutTimerFunc(speed,funTimer,0);
+    glutKeyboardFunc(funKeyboard);
     
     // Bucle principal
     glutMainLoop();
@@ -148,6 +151,10 @@ void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat
 }
 
 void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    
+    // Añadir animación al dron
+    glm::mat4 R_dron = glm::rotate(I, glm::radians(animRotDron), glm::vec3(0.0, 1.0, 0.0));
+    M = M*R_dron;
     
     /* Dibuja el cuerpo */
     drawCuerpo(P, V, M);
@@ -263,7 +270,7 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     /* Configuración de aspas */
     glm::mat4 S_cono = glm::scale(I, glm::vec3(0.01116484395, 0.06, 0.03721614651));
     glm::mat4 R_cono = glm::rotate(I, glm::radians(rotY), glm::vec3(0.0, 0.0, 1.0));
-    glm::mat4 R_anim = glm::rotate(I, glm::radians(rotAnim), glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 R_anim = glm::rotate(I, glm::radians(animRotAspa), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 R90 = glm::rotate(I, glm::radians(rotY), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 T_cono = glm::translate(I, glm::vec3(0.16, 0.0, 0.0));
     
@@ -276,9 +283,24 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 }
 void funTimer(int ignore) {
     
-    rotAnim -= 5;
+    animRotAspa -= 5;
     
     glutPostRedisplay();
     glutTimerFunc(speed,funTimer,0);
     
+}
+
+void funKeyboard(unsigned char key, int x, int y) {
+    
+    switch(key) {
+        // TODO ver si la rotación es la que se pide
+        case 'r':
+            animRotDron -= 5.0;
+            break;
+        case 'R':
+            animRotDron += 5.0;
+            break;
+    }
+    glutPostRedisplay();
+        
 }
