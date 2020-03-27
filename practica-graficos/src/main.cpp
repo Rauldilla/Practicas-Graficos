@@ -43,6 +43,7 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M);
    float animRotAspa = 0;
    float animRotDron = 0;
    float animRotSoportes = 0;
+   float animYdron = 0.2;
 
 int main(int argc, char** argv) {
     // Inicializamos GLUT
@@ -121,7 +122,9 @@ void funDisplay() {
     
     // Dibujamos escena
     drawSuelo(P, V, I);
-    drawDron(P, V, I);
+    
+    glm::mat4 T_iniPos = glm::translate(I, glm::vec3(0.0, animYdron, 0.0));
+    drawDron(P, V, I*T_iniPos);
     
     // Intercambiamos los buffers
     glutSwapBuffers();
@@ -305,16 +308,27 @@ void funKeyboard(unsigned char key, int x, int y) {
             break;
         case 'a':
             if(animRotSoportes <= 0 && animRotSoportes > -180) {
-                std::cout << animRotSoportes << "\n";
                 animRotSoportes -= 5;
             }
             break;
         case 'A':
             if(animRotSoportes < 0 && animRotSoportes >= -180) {
-                std::cout << animRotSoportes << "\n";
                 animRotSoportes += 5;
             }
             break;
+        case 'y':
+            if(animYdron < 1.95) {
+                animYdron += 0.05;
+            }
+            break;
+        case 'Y':
+            // TODO check this
+            if(animYdron >= 0.25) {
+                animYdron -= 0.05;
+            }
+            break;
+        case 'p':
+            std::cout << animYdron << "\n";
     }
     glutPostRedisplay();
         
