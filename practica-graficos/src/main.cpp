@@ -19,6 +19,7 @@ void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawBrazos(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
 // Shaders
@@ -162,15 +163,18 @@ void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat
 
 void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
+    float rotY = 72.0;
+    glm::mat4 R72 = glm::rotate(I, glm::radians(rotY),glm::vec3(0.0, 1.0, 0.0));
+    
+    /* Dibuja el cuerpo */
     drawCuerpo(P, V, M);
     
+    /* Dibuja los brazos */
     drawBrazos(P, V, M);
     
-    float rotYhelice = 72.0;
+    /* Configuración de las hélices */
     float rotInicial = 45.0;
     
-    /* Configuración de las hélices */
-    glm::mat4 R72Helices = glm::rotate(I, glm::radians(rotYhelice),glm::vec3(0.0, 1.0, 0.0));
     // Situar hélices en la punta de los brazos
     glm::mat4 T_helicePos = glm::translate(I, glm::vec3(1.0, 0.0, 0.0));
     // Colocación inicial de las hélices
@@ -178,10 +182,20 @@ void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
     /* Dibuja las hélices */
     drawHelice(P, V, M*T_helicePos*R_rotInicial);
-    drawHelice(P, V, M*R72Helices*T_helicePos*R_rotInicial);
-    drawHelice(P, V, M*R72Helices*R72Helices*T_helicePos*R_rotInicial);
-    drawHelice(P, V, M*R72Helices*R72Helices*R72Helices*T_helicePos*R_rotInicial);
-    drawHelice(P, V, M*R72Helices*R72Helices*R72Helices*R72Helices*T_helicePos*R_rotInicial);
+    drawHelice(P, V, M*R72*T_helicePos*R_rotInicial);
+    drawHelice(P, V, M*R72*R72*T_helicePos*R_rotInicial);
+    drawHelice(P, V, M*R72*R72*R72*T_helicePos*R_rotInicial);
+    drawHelice(P, V, M*R72*R72*R72*R72*T_helicePos*R_rotInicial);
+    
+    /* Configuracion de las articulaciones */
+    glm::mat4 T_soportePos = glm::translate(I, glm::vec3(1.0, 0.0, 0.0));
+    
+    /* Dibuja las articulaciones */
+    drawArticulacion(P,V,M*T_soportePos);
+    drawArticulacion(P,V,M*R72*T_soportePos);
+    drawArticulacion(P,V,M*R72*R72*T_soportePos);
+    drawArticulacion(P,V,M*R72*R72*R72*T_soportePos);
+    drawArticulacion(P,V,M*R72*R72*R72*R72*T_soportePos);
 }
 
 void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -221,6 +235,14 @@ void drawBrazos(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
     drawObject(modelCilindro, glm::vec3(0.0, 0.0, 1.0), P, V,
             M*R72*R72*R72*R72*T_cilindro*R_cilindro*S_cilindro);
+}
+
+void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    
+    glm::mat4 S_esfera = glm::scale(I, glm::vec3(0.075, 0.075, 0.075));
+    
+    /* Dibuja el cuerpo */
+    drawObject(modelEsfera, glm::vec3(1.0, 0.0, 1.0), P, V, M*S_esfera);
 }
 
 void drawHelice(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
