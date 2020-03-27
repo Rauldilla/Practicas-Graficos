@@ -103,7 +103,7 @@ void funDisplay() {
     glm::mat4 P  = glm::perspective(glm::radians(fovy), aspect, nplane, fplane);
     
     // Matriz de Vista V (Camara)
-    glm::vec3 pos   (4.0, 4.0, 4.0);
+    glm::vec3 pos   (0.0, 0.0, 5.0);
     
     glm::vec3 lookat(0.0, 0.0,  0.0);
     glm::vec3 up    (0.0, 1.0,  0.0);
