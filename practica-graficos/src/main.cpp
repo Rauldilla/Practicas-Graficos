@@ -155,18 +155,21 @@ void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     /* Dibuja los brazos */
     drawBrazos(P, V, M);
     
-    /* Configuración de las hélices */
+    /* Dibuja las hélices */
+    
+    /* Configuración de las aspas */
     float rotInicial = 45.0;
     
-    // Colocación inicial de las hélices
+    /* Colocación inicial de las hélices */
+    glm::mat4 T_helice = glm::translate(I, glm::vec3(1.0, 0.20, 0.0));
     glm::mat4 R_rotInicial = glm::rotate(I, glm::radians(rotInicial),glm::vec3(0.0, 1.0, 0.0));
     
     /* Dibuja las hélices */
-    drawHelice(P, V, M*T*R_rotInicial);
-    drawHelice(P, V, M*R72*T*R_rotInicial);
-    drawHelice(P, V, M*R72*R72*T*R_rotInicial);
-    drawHelice(P, V, M*R72*R72*R72*T*R_rotInicial);
-    drawHelice(P, V, M*R72*R72*R72*R72*T*R_rotInicial);
+    drawHelice(P, V, M*T_helice*R_rotInicial);
+    drawHelice(P, V, M*R72*T_helice*R_rotInicial);
+    drawHelice(P, V, M*R72*R72*T_helice*R_rotInicial);
+    drawHelice(P, V, M*R72*R72*R72*T_helice*R_rotInicial);
+    drawHelice(P, V, M*R72*R72*R72*R72*T_helice*R_rotInicial);
     
     /* Dibuja las articulaciones */
     drawArticulacion(P,V,M*T);
