@@ -12,10 +12,12 @@
 #define I glm::mat4(1.0)
 #define UPPER_FOVY 60.0
 #define LOWER_FOVY 10.0
-#define UPPER_ALPHAX 179.0
+#define X_PLANE 2.0
+#define Z_PLANE 2.0
+/*#define UPPER_ALPHAX 179.0
 #define LOWER_ALPHAX -179.0
 #define UPPER_ALPHAY 89.0
-#define LOWER_ALPHAY -89.0
+#define LOWER_ALPHAY -89.0*/
 
 void funInit();
 void funDisplay();
@@ -60,13 +62,12 @@ float fovyModifier = 30.0;
 // Mouse rotation variables
 float deltaAngleX = 0.0f;
 float deltaAngleY = 0.0f;
-float angleX = 0.0;
-float angleY = 0.0;
+float angleX = 90.0;
+float angleY = 90.0;
 float alphaX = 0.0;
 float alphaY = 0.0;
 int xOrigin = -1;
 int yOrigin = -1;
-//int valid = 0;
 
 int main(int argc, char** argv) {
     // Inicializamos GLUT
@@ -162,7 +163,7 @@ void funDisplay() {
 void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     /* Configuración del suelo */
-    glm::mat4 SPlane = glm::scale(I, glm::vec3(2.0, 1.0, 2.0));
+    glm::mat4 SPlane = glm::scale(I, glm::vec3(X_PLANE, 1.0, Z_PLANE));
     glm::mat4 TPlane = glm::translate(I, glm::vec3(0.0, 0.0, 0.0));
 
     /* Dibuja el suelo */
@@ -366,16 +367,26 @@ void funKeyboard(unsigned char key, int x, int y) {
 
 void funSpecial(int key, int x, int y) {
 
-    // TODO limitar movimiento para que no salga del plano
-    // TODO movimiento sobre la x no funciona bien
     switch (key) {
-        case GLUT_KEY_UP: animZdron += 0.1;
+        case GLUT_KEY_UP:
+            if (animZdron < (Z_PLANE - 0.5)) {
+                animZdron += 0.1;
+            }
             break;
-        case GLUT_KEY_DOWN: animZdron -= 0.1;
+        case GLUT_KEY_DOWN: 
+            if (animZdron > (-Z_PLANE + 0.5)) {
+                animZdron -= 0.1;
+            }
             break;
-        case GLUT_KEY_LEFT: animXdron -= 0.1;
+        case GLUT_KEY_LEFT:
+            if (animXdron > (-X_PLANE + 0.5)) {
+                animXdron -= 0.1;
+            }
             break;
-        case GLUT_KEY_RIGHT: animXdron += 0.1;
+        case GLUT_KEY_RIGHT: 
+            if (animXdron < (X_PLANE - 0.5)) {
+                animXdron += 0.1;
+            }
             break;
         default:
             animZdron = 0.0;
@@ -424,8 +435,8 @@ void funMotion(int x, int y) {
     if ((xOrigin >= 0) && (yOrigin >= 0)) {
         
         // Update deltas
-        deltaAngleX = (x - xOrigin) * 0.001f;
-        deltaAngleY = (y - yOrigin) * 0.001f;
+        deltaAngleX = (x - xOrigin) * 0.004f;
+        deltaAngleY = (y - yOrigin) * 0.004f;
         
         // Update camera
         alphaX = sin(angleX + deltaAngleX);
