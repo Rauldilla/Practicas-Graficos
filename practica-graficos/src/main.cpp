@@ -12,6 +12,10 @@
 #define I glm::mat4(1.0)
 #define UPPER_FOVY 60.0
 #define LOWER_FOVY 10.0
+#define UPPER_ALPHAX 179.0
+#define LOWER_ALPHAX -179.0
+#define UPPER_ALPHAY 89.0
+#define LOWER_ALPHAY -89.0
 
 void funInit();
 void funDisplay();
@@ -19,6 +23,7 @@ void funTimer(int value);
 void funKeyboard(unsigned char key, int x, int y);
 void funSpecial(int key, int x, int y);
 void funMouse(int button, int state, int x, int y);
+void funMotion(int x, int y);
 
 void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
@@ -52,6 +57,17 @@ float animXdron = 0.0;
 float animZdron = 0.0;
 float fovyModifier = 30.0;
 
+// Mouse rotation variables
+float deltaAngleX = 0.0f;
+float deltaAngleY = 0.0f;
+float angleX = 0.0;
+float angleY = 0.0;
+float alphaX = 0.0;
+float alphaY = 0.0;
+int xOrigin = -1;
+int yOrigin = -1;
+//int valid = 0;
+
 int main(int argc, char** argv) {
     // Inicializamos GLUT
     glutInit(&argc, argv);
@@ -83,6 +99,7 @@ int main(int argc, char** argv) {
     glutKeyboardFunc(funKeyboard);
     glutSpecialFunc(funSpecial);
     glutMouseFunc(funMouse);
+    glutMotionFunc(funMotion);
 
     // Bucle principal
     glutMainLoop();
@@ -123,8 +140,11 @@ void funDisplay() {
     glm::mat4 P = glm::perspective(glm::radians(fovy), aspect, nplane, fplane);
 
     // Matriz de Vista V (Camara)
-    glm::vec3 pos(0.0, 0.0, 5.0);
-
+    float x = 5.0f * glm::cos(alphaY) * glm::sin(alphaX);
+    float y = 5.0f * glm::sin(alphaY);
+    float z = 5.0f * glm::cos(alphaY) * glm::cos(alphaX);
+    
+    glm::vec3 pos(x, y, z);
     glm::vec3 lookat(0.0, 0.0, 0.0);
     glm::vec3 up(0.0, 1.0, 0.0);
     glm::mat4 V = glm::lookAt(pos, lookat, up);
@@ -347,14 +367,15 @@ void funKeyboard(unsigned char key, int x, int y) {
 void funSpecial(int key, int x, int y) {
 
     // TODO limitar movimiento para que no salga del plano
+    // TODO movimiento sobre la x no funciona bien
     switch (key) {
         case GLUT_KEY_UP: animZdron += 0.1;
             break;
         case GLUT_KEY_DOWN: animZdron -= 0.1;
             break;
-        case GLUT_KEY_LEFT: animXdron -= 5.0;
+        case GLUT_KEY_LEFT: animXdron -= 0.1;
             break;
-        case GLUT_KEY_RIGHT: animXdron += 5.0;
+        case GLUT_KEY_RIGHT: animXdron += 0.1;
             break;
         default:
             animZdron = 0.0;
@@ -368,6 +389,18 @@ void funMouse(int button, int state, int x, int y) {
 
     // Wheel reports as button 3(scroll up) and button 4(scroll down)
     switch (button) {
+        case GLUT_LEFT_BUTTON:
+            // When the button is released
+            if (state == GLUT_UP) {
+                angleX += deltaAngleX;
+                angleY += deltaAngleY;
+                xOrigin = -1;
+                yOrigin = -1;
+            } else {
+                xOrigin = x;
+                yOrigin = y;
+            }
+            break;
         case 3: // SCROLL UP
             if ((fovyModifier + 1.0 >= LOWER_FOVY) && (fovyModifier + 1.0 <= UPPER_FOVY)) {
                 fovyModifier += 1.0;
@@ -381,6 +414,22 @@ void funMouse(int button, int state, int x, int y) {
         default:
             fovyModifier = 30.0;
             break;
+    }
+    glutPostRedisplay();
+}
+
+void funMotion(int x, int y) {
+    
+    // TODO revisar, esto no funciona aun del todo bien
+    if ((xOrigin >= 0) && (yOrigin >= 0)) {
+        
+        // Update deltas
+        deltaAngleX = (x - xOrigin) * 0.001f;
+        deltaAngleY = (y - yOrigin) * 0.001f;
+        
+        // Update camera
+        alphaX = sin(angleX + deltaAngleX);
+        alphaY = -cos(angleY + deltaAngleY);
     }
     glutPostRedisplay();
 }
