@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <iostream>
 #include <ogl/glew.h>
 #include <ogl/freeglut.h>
@@ -14,10 +16,9 @@
 #define LOWER_FOVY 10.0
 #define X_PLANE 2.0
 #define Z_PLANE 2.0
-/*#define UPPER_ALPHAX 179.0
-#define LOWER_ALPHAX -179.0
-#define UPPER_ALPHAY 89.0
-#define LOWER_ALPHAY -89.0*/
+#define X_VIEWPORT 600
+#define Y_VIEWPORT 600
+
 
 void funInit();
 void funDisplay();
@@ -47,8 +48,8 @@ Model modelCono;
 Model modelEsfera;
 
 // Viewport
-int w = 600;
-int h = 600;
+int w = X_VIEWPORT;
+int h = Y_VIEWPORT;
 
 GLint speed = 20;
 float animRotAspa = 0;
@@ -58,16 +59,8 @@ float animYdron = 0.2;
 float animXdron = 0.0;
 float animZdron = 0.0;
 float fovyModifier = 30.0;
-
-// Mouse rotation variables
-float deltaAngleX = 0.0f;
-float deltaAngleY = 0.0f;
-float angleX = 90.0;
-float angleY = 90.0;
 float alphaX = 0.0;
 float alphaY = 0.0;
-int xOrigin = -1;
-int yOrigin = -1;
 
 int main(int argc, char** argv) {
     // Inicializamos GLUT
@@ -144,7 +137,7 @@ void funDisplay() {
     float x = 5.0f * glm::cos(alphaY) * glm::sin(alphaX);
     float y = 5.0f * glm::sin(alphaY);
     float z = 5.0f * glm::cos(alphaY) * glm::cos(alphaX);
-    
+
     glm::vec3 pos(x, y, z);
     glm::vec3 lookat(0.0, 0.0, 0.0);
     glm::vec3 up(0.0, 1.0, 0.0);
@@ -373,7 +366,7 @@ void funSpecial(int key, int x, int y) {
                 animZdron += 0.1;
             }
             break;
-        case GLUT_KEY_DOWN: 
+        case GLUT_KEY_DOWN:
             if (animZdron > (-Z_PLANE + 0.5)) {
                 animZdron -= 0.1;
             }
@@ -383,7 +376,7 @@ void funSpecial(int key, int x, int y) {
                 animXdron -= 0.1;
             }
             break;
-        case GLUT_KEY_RIGHT: 
+        case GLUT_KEY_RIGHT:
             if (animXdron < (X_PLANE - 0.5)) {
                 animXdron += 0.1;
             }
@@ -398,20 +391,7 @@ void funSpecial(int key, int x, int y) {
 
 void funMouse(int button, int state, int x, int y) {
 
-    // Wheel reports as button 3(scroll up) and button 4(scroll down)
     switch (button) {
-        case GLUT_LEFT_BUTTON:
-            // When the button is released
-            if (state == GLUT_UP) {
-                angleX += deltaAngleX;
-                angleY += deltaAngleY;
-                xOrigin = -1;
-                yOrigin = -1;
-            } else {
-                xOrigin = x;
-                yOrigin = y;
-            }
-            break;
         case 3: // SCROLL UP
             if ((fovyModifier + 1.0 >= LOWER_FOVY) && (fovyModifier + 1.0 <= UPPER_FOVY)) {
                 fovyModifier += 1.0;
@@ -422,25 +402,45 @@ void funMouse(int button, int state, int x, int y) {
                 fovyModifier -= 1.0;
             }
             break;
-        default:
-            fovyModifier = 30.0;
-            break;
     }
     glutPostRedisplay();
 }
 
 void funMotion(int x, int y) {
-    
-    // TODO revisar, esto no funciona aun del todo bien
-    if ((xOrigin >= 0) && (yOrigin >= 0)) {
-        
-        // Update deltas
-        deltaAngleX = (x - xOrigin) * 0.004f;
-        deltaAngleY = (y - yOrigin) * 0.004f;
-        
-        // Update camera
-        alphaX = sin(angleX + deltaAngleX);
-        alphaY = -cos(angleY + deltaAngleY);
+
+    /* Para esta parte hay que tener en cuenta que la x y la y que llegan al 
+     método son partiendo de la esquina superior izquierda del viewport,
+     mientras que a nosotros nos interesa que sean en base al CENTRO
+     del viewport. */
+
+    float xViewport;
+    float yViewport;
+    float mitadX = X_VIEWPORT / 2;
+    float mitadY = Y_VIEWPORT / 2;
+
+    float calculoAlphaX;
+    float calculoAlphaY;
+
+    if (x < mitadX) {
+        xViewport = -(mitadX - x); // Resultado en PIXELES
+    } else {
+        xViewport = x - mitadX; // Resultado en PIXELES
     }
-    glutPostRedisplay();
+
+    if (y < mitadY) {
+        yViewport = mitadY - y; // Resultado en PIXELES
+    } else {
+        yViewport = -(y - mitadY); // Resultado en PIXELES
+    }
+
+    // Regla de tres para pasar de pixeles a grados
+    calculoAlphaX = (xViewport * 90) / mitadX; // Resultado en GRADOS
+    calculoAlphaY = (yViewport * 90) / mitadY; // Resultado en GRADOS
+
+    if ((calculoAlphaX >= (-179)) && (calculoAlphaX <= 179)) {
+        alphaX = ((calculoAlphaX * M_PI) / 180); // Resultado en RADIANES
+    }
+    if ((calculoAlphaY >= (-89)) && (calculoAlphaY <= 89)) {
+        alphaY = ((calculoAlphaY * M_PI) / 180); // Resultado en RADIANES
+    }
 }
