@@ -21,6 +21,7 @@
 
 
 void funInit();
+void funReshape(int w, int h);
 void funDisplay();
 void funTimer(int value);
 void funKeyboard(unsigned char key, int x, int y);
@@ -89,6 +90,7 @@ int main(int argc, char** argv) {
 
     // Callbacks
     glutDisplayFunc(funDisplay);
+    glutReshapeFunc(funReshape);
     glutTimerFunc(speed, funTimer, 0);
     glutKeyboardFunc(funKeyboard);
     glutSpecialFunc(funSpecial);
@@ -151,6 +153,16 @@ void funDisplay() {
 
     // Intercambiamos los buffers
     glutSwapBuffers();
+}
+
+void funReshape(int wnew, int hnew) {
+    
+    // Configuración del Viewport
+    glViewport(0, 0, wnew, hnew);
+    
+    // Captura de w y h
+    w = wnew;
+    h = hnew;
 }
 
 void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
