@@ -427,8 +427,8 @@ void funMotion(int x, int y) {
 
     float xViewport;
     float yViewport;
-    float mitadX = X_VIEWPORT / 2;
-    float mitadY = Y_VIEWPORT / 2;
+    float mitadX = w / 2;
+    float mitadY = h / 2;
 
     float calculoAlphaX;
     float calculoAlphaY;
