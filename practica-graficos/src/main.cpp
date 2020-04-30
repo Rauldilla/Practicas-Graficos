@@ -31,6 +31,7 @@ void funMotion(int x, int y);
 
 void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawBrazos(glm::mat4 P, glm::mat4 V, glm::mat4 M);
@@ -147,6 +148,7 @@ void funDisplay() {
 
     // Dibujamos escena
     drawSuelo(P, V, I);
+    drawVentana(P, V, I);
 
     glm::mat4 T_iniPos = glm::translate(I, glm::vec3(animXdron, animYdron, animZdron));
     drawDron(P, V, I * T_iniPos);
@@ -173,6 +175,18 @@ void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     /* Dibuja el suelo */
     drawObject(modelPlano, glm::vec3(0.40, 0.40, 0.40), P, V, M * SPlane * TPlane);
+}
+
+void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    float rotWindow = 90.0;
+    /* Configuración del suelo */
+    glm::mat4 RWindow = glm::rotate(I, glm::radians(rotWindow), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 SWindow = glm::scale(I, glm::vec3(X_PLANE, 1.0, Z_PLANE));
+    glm::mat4 TWindow = glm::translate(I, glm::vec3(0.0, 2.0, 0.0));
+
+    /* Dibuja el suelo */
+    drawObject(modelPlano, glm::vec3(0.40, 0.40, 0.40), P, V, M * RWindow * SWindow * TWindow);
 }
 
 void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
