@@ -59,9 +59,9 @@ float animRotSoportes = 0;
 float animYdron = 0.2;
 float animXdron = 0.0;
 float animZdron = 0.0;
-float fovyModifier = 30.0;
+float fovyModifier = 60.0;
 float alphaX = 0.0;
-float alphaY = 0.0;
+float alphaY = 0.174533;
 
 int main(int argc, char** argv) {
     // Inicializamos GLUT
