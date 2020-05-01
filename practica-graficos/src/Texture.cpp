@@ -3,7 +3,7 @@
 //------------------------
 // Crea la textura
 //------------------------
-unsigned int Texture::initTexture(const char *textureFile) {
+void Texture::initTexture(const char *textureFile) {
     
  // Creamos la textura a configurar
     glGenTextures(1,&texture);  
@@ -26,15 +26,13 @@ unsigned int Texture::initTexture(const char *textureFile) {
     float aniso = 0.0f;
     glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &aniso);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aniso);
-    
-    return texture;
 
 }
 
 //--------------------------------------------------
 // Carga una textura mediante la librería Freeimage
 //--------------------------------------------------
-unsigned char *Texture::loadTexture(const char *textureFile, unsigned int &w, unsigned int &h) {
+unsigned char* Texture::loadTexture(const char *textureFile, unsigned int &w, unsigned int &h) {
     
     FreeImage_Initialise(TRUE);
 
@@ -72,6 +70,15 @@ unsigned char *Texture::loadTexture(const char *textureFile, unsigned int &w, un
     FreeImage_DeInitialise();
 
     return pixelsRGBA;
+}
+
+//-----------------------------------------
+// Devuelve el identificador de la textura
+//-----------------------------------------
+unsigned int Texture::getTexture() {
+    
+    return texture;
+    
 }
 
 //-----------------------

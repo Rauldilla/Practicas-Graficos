@@ -19,8 +19,19 @@ unsigned int Shaders::createShader(unsigned long shader, const char* shaderFile)
  // Se crea un objeto shader
     unsigned int shaderID = glCreateShader(shader); 
     
- // Se asigna su código fuente
-    const char *shaderSrc = loadShader(shaderFile);
+ // Se asigna su código fuente contenido en un fichero glsl
+    std::string   code = "";
+    std::ifstream file(shaderFile, std::ios::in);
+    if(file.is_open()) {
+        std::string line;
+        while(getline(file, line)) code += line + "\n";
+        file.close();
+    }
+    else {
+        std::cout << "El fichero " << shaderFile << " no se puede abrir." << std::endl;
+        return 0;
+    }
+    const char *shaderSrc = code.c_str();
     glShaderSource(shaderID, 1, &shaderSrc, NULL);
     
  // Se compila con control de errores
@@ -38,27 +49,6 @@ unsigned int Shaders::createShader(unsigned long shader, const char* shaderFile)
     }
     
     return shaderID;
-}
-
-//-----------------------------------
-// Lee el código fuente de un shader
-//-----------------------------------
-const char* Shaders::loadShader(const char *shaderFile) {
-   
-    std::string   code;
-    std::ifstream file(shaderFile, std::ios::in);
-    if(file.is_open()) {
-        std::string line = "";
-        while(getline(file, line)) code += "\n" + line;
-        code += "\0";
-        file.close();
-    }
-    else {
-        std::cout << "El fichero " << shaderFile << " no se puede abrir." << std::endl;
-        return 0;
-    }
-    
-    return code.c_str();
 }
 
 //-------------------------------------------------------------------
@@ -159,14 +149,13 @@ void Shaders::setTextures(const std::string &name, Textures value) {
     glUniform1i(glGetUniformLocation(program,(name+".emissive").c_str()), value.emissive);
     
     if(value.normal!=0) { 
-        glUniform1i(glGetUniformLocation(program,"unormals"),1);
         glActiveTexture(GL_TEXTURE0 + value.normal);
         glBindTexture(GL_TEXTURE_2D,value.normal);
-        glUniform1i(glGetUniformLocation(program,(name+".normal"  ).c_str()), value.normal);
-        
+        glUniform1i(glGetUniformLocation(program,(name+".normal").c_str()), value.normal);
+        glUniform1i(glGetUniformLocation(program,"uNormalMap"),1);        
     }
     else {
-        glUniform1i(glGetUniformLocation(program,"unormals"),0);
+        glUniform1i(glGetUniformLocation(program,"uNormalMap"),0);
     }
     
     glUniform1f (glGetUniformLocation(program,(name+".shininess").c_str()), value.shininess);

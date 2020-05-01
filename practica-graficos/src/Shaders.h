@@ -60,8 +60,6 @@ class Shaders {
                 
         unsigned int createShader (unsigned long shader , const char *shaderFile);
         unsigned int createProgram(unsigned int  vShader, unsigned int fShader);
-        
-        const char *loadShader(const char *shaderFile);
 
 };
 
