@@ -99,6 +99,7 @@ Light     lightF[NLF];
 Material matRuby;
 Material matGold;
 Material matPolishedBronze;
+Material matPolishedBronzeSoportes;
 Material matLuces;
 Textures texPlano;
 Textures texEsfera;
@@ -109,7 +110,7 @@ int main(int argc, char** argv) {
     glutInitContextVersion(3, 3);
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
     glutInitContextProfile(GLUT_CORE_PROFILE);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(w,h);
     glutInitWindowPosition(50,50);
     glutCreateWindow("Practica-3");
@@ -148,6 +149,10 @@ void funInit() {
     // Test de profundidad
     glEnable(GL_DEPTH_TEST);
     //glPolygonOffset(1.0, 1.0);
+    
+    // Transparencias
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Shaders
     shaders.initShaders("resources/shaders/vshader.glsl", "resources/shaders/fshader.glsl");
@@ -162,7 +167,7 @@ void funInit() {
     textureDiscoDiffuse.initTexture("resources/textures/imgDisco1.png");
     textureDiscoNormal.initTexture("resources/textures/imgDisco2.png");
     textureEmissive.initTexture("resources/textures/imgEmissive.png");
-    textureEmissive.initTexture("resources/textures/imgHexagon.png");
+    textureHexagon.initTexture("resources/textures/imgHexagon.png");
     textureNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
     textureRocks.initTexture("resources/textures/imgRocks.png");
     textureLuces.initTexture("resources/textures/imgLuces.png");
@@ -209,9 +214,9 @@ void funInit() {
     lightF[1].c2          = 0.032;
     
     // Materiales
-    matRuby.ambient       = glm::vec4(0.174500, 0.011750, 0.011750, 0.55);
-    matRuby.diffuse       = glm::vec4(0.614240, 0.041360, 0.041360, 0.55);
-    matRuby.specular      = glm::vec4(0.727811, 0.626959, 0.626959, 0.55);
+    matRuby.ambient       = glm::vec4(0.174500, 0.011750, 0.011750, 1.00);
+    matRuby.diffuse       = glm::vec4(0.614240, 0.041360, 0.041360, 1.00);
+    matRuby.specular      = glm::vec4(0.727811, 0.626959, 0.626959, 1.00);
     matRuby.emissive      = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
     matRuby.shininess     = 76.8;
     
@@ -221,11 +226,17 @@ void funInit() {
     matGold.emissive      = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
     matGold.shininess     = 51.2;
     
-    matPolishedBronze.ambient       = glm::vec4(0.25f, 0.148f, 0.06475f, 1.0f);
-    matPolishedBronze.diffuse       = glm::vec4(0.4f, 0.2368f, 0.1036f, 1.0f);
-    matPolishedBronze.specular      = glm::vec4(0.774597f, 0.458561f, 0.200621f, 1.0f);
-    matPolishedBronze.emissive      = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
+    matPolishedBronze.ambient       = glm::vec4(0.25f, 0.148f, 0.06475f, 0.75);
+    matPolishedBronze.diffuse       = glm::vec4(0.4f, 0.2368f, 0.1036f, 0.75);
+    matPolishedBronze.specular      = glm::vec4(0.774597f, 0.458561f, 0.200621f, 0.75);
+    matPolishedBronze.emissive      = glm::vec4(0.000000, 0.000000, 0.000000, 0.75);
     matPolishedBronze.shininess     = 76.8f;
+    
+    matPolishedBronzeSoportes.ambient       = glm::vec4(0.25f, 0.148f, 0.06475f, 1.00);
+    matPolishedBronzeSoportes.diffuse       = glm::vec4(0.4f, 0.2368f, 0.1036f, 1.00);
+    matPolishedBronzeSoportes.specular      = glm::vec4(0.774597f, 0.458561f, 0.200621f, 1.00);
+    matPolishedBronzeSoportes.emissive      = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
+    matPolishedBronzeSoportes.shininess     = 76.8f;
     
     matLuces.ambient      = glm::vec4(0.0, 0.0, 0.0, 1.0);
     matLuces.diffuse      = glm::vec4(0.0, 0.0, 0.0, 1.0);
@@ -352,8 +363,10 @@ void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 SWindow = glm::scale(I, glm::vec3(X_PLANE, 1.0, Z_PLANE));
     glm::mat4 TWindow = glm::translate(I, glm::vec3(0.0, 2.0, 0.0));
 
-    /* Dibuja el suelo */
+    /* Dibuja la ventana */
+    glDepthMask(GL_FALSE);
     drawObjectMat(modelPlano, matPolishedBronze, P, V, M * RWindow * SWindow * TWindow);
+    glDepthMask(GL_TRUE);
 }
 
 void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -391,7 +404,9 @@ void drawCupula(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 S_cupula = glm::scale(I, glm::vec3(0.15, 0.15, 0.15));
     glm::mat4 T_cupula = glm::translate(I, glm::vec3(0.0, 0.8, 0.0));
     
+    glDepthMask(GL_FALSE);
     drawObjectMat(modelEsfera, matPolishedBronze, P, V, M * S_cupula * T_cupula);
+    glDepthMask(GL_TRUE);
 }
 
 void drawBrazos(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -469,7 +484,7 @@ void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 S_cilindro = glm::scale(I, glm::vec3(0.025, 0.1, 0.025));
     glm::mat4 T_cilindro = glm::translate(I, glm::vec3(0.0, 1.0, 0.0));
 
-    drawObjectMat(modelCilindro, matPolishedBronze, P, V,
+    drawObjectMat(modelCilindro, matPolishedBronzeSoportes, P, V,
             M * S_cilindro * T_cilindro);
 }
 
