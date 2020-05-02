@@ -84,6 +84,7 @@ float animZdron = 0.0;
 float fovyModifier = 60.0;
 float alphaX = 0.0;
 float alphaY = 0.174533;
+bool aspasMoviendose = true;
 
 // Luces
 #define   NLD 1
@@ -501,7 +502,8 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void funTimer(int ignore) {
 
-    animRotAspa += 5;
+    if(aspasMoviendose)
+        animRotAspa += 5;
 
     glutPostRedisplay();
     glutTimerFunc(speed, funTimer, 0);
@@ -540,6 +542,12 @@ void funKeyboard(unsigned char key, int x, int y) {
             break;
         case 'p':
             std::cout << animYdron << "\n";
+            break;
+        case 's':
+            if(aspasMoviendose)
+                aspasMoviendose = false;
+            else
+                aspasMoviendose = true;
     }
     glutPostRedisplay();
 
