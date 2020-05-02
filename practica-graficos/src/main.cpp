@@ -44,6 +44,7 @@ void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawCupula(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawBrazos(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawHelices(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M);
@@ -362,6 +363,7 @@ void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     /* Dibuja el cuerpo */
     drawCuerpo(P, V, M);
+    drawCupula(P, V, M);
 
     /* Dibuja los brazos */
     drawBrazos(P, V, M);
@@ -381,6 +383,14 @@ void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     /* Dibuja el cuerpo */
     drawObjectTex(modelEsfera, texEsfera, P, V, M * S_esfera);
+}
+
+void drawCupula(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    // TODO Revisar tamaño y posición
+    glm::mat4 S_cupula = glm::scale(I, glm::vec3(0.15, 0.15, 0.15));
+    glm::mat4 T_cupula = glm::translate(I, glm::vec3(0.0, 0.8, 0.0));
+    
+    drawObjectMat(modelEsfera, matPolishedBronze, P, V, M * S_cupula * T_cupula);
 }
 
 void drawBrazos(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
