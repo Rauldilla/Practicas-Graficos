@@ -11,6 +11,13 @@
 #include "Shaders.h"
 #include "Model.h"
 
+#include <sstream>
+std::string toString(const int &i) {
+    std::stringstream ss;
+    ss << i;
+    return ss.str();
+}
+
 #define I glm::mat4(1.0)
 #define UPPER_FOVY 60.0
 #define LOWER_FOVY 10.0
@@ -29,7 +36,10 @@ void funSpecial(int key, int x, int y);
 void funMouse(int button, int state, int x, int y);
 void funMotion(int x, int y);
 
-void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void setLights(glm::mat4 P, glm::mat4 V);
+void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm::mat4 M);
+
 void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M);
@@ -49,10 +59,20 @@ Model modelCilindro;
 Model modelCono;
 Model modelEsfera;
 
+// Texturas
+Texture textureDiscoDiffuse;
+Texture textureDiscoNormal;
+Texture textureEmissive;
+Texture textureHexagon;
+Texture textureNoEmissive;
+Texture textureRocks;
+Texture textureLuces;
+
 // Viewport
 int w = X_VIEWPORT;
 int h = Y_VIEWPORT;
 
+// Animaciones
 GLint speed = 20;
 float animRotAspa = 0;
 float animRotDron = 0;
@@ -64,6 +84,23 @@ float fovyModifier = 60.0;
 float alphaX = 0.0;
 float alphaY = 0.174533;
 
+// Luces
+#define   NLD 1
+#define   NLP 1
+#define   NLF 2
+Light     lightG;
+Light     lightD[NLD];
+Light     lightP[NLP];
+Light     lightF[NLF];
+
+// Materiales
+Material matRuby;
+Material matGold;
+Material matPolishedBronze;
+Material matLuces;
+Textures texPlano;
+Textures texEsfera;
+
 int main(int argc, char** argv) {
     // Inicializamos GLUT
     glutInit(&argc, argv);
@@ -71,9 +108,9 @@ int main(int argc, char** argv) {
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
     glutInitContextProfile(GLUT_CORE_PROFILE);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(w, h);
-    glutInitWindowPosition(50, 50);
-    glutCreateWindow("Practica-1");
+    glutInitWindowSize(w,h);
+    glutInitWindowPosition(50,50);
+    glutCreateWindow("Practica-3");
 
     // Inicializamos GLEW
     glewExperimental = GL_TRUE;
@@ -108,7 +145,7 @@ void funInit() {
 
     // Test de profundidad
     glEnable(GL_DEPTH_TEST);
-    glPolygonOffset(1.0, 1.0);
+    //glPolygonOffset(1.0, 1.0);
 
     // Shaders
     shaders.initShaders("resources/shaders/vshader.glsl", "resources/shaders/fshader.glsl");
@@ -118,6 +155,93 @@ void funInit() {
     modelCilindro.initModel("resources/models/cylinder.obj");
     modelCono.initModel("resources/models/cone.obj");
     modelEsfera.initModel("resources/models/sphere.obj");
+    
+    // Texturas
+    textureDiscoDiffuse.initTexture("resources/textures/imgDisco1.png");
+    textureDiscoNormal.initTexture("resources/textures/imgDisco2.png");
+    textureEmissive.initTexture("resources/textures/imgEmissive.png");
+    textureEmissive.initTexture("resources/textures/imgHexagon.png");
+    textureNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
+    textureRocks.initTexture("resources/textures/imgRocks.png");
+    textureLuces.initTexture("resources/textures/imgLuces.png");
+    
+    // Luz ambiental global
+    lightG.ambient = glm::vec3(0.5, 0.5, 0.5);
+    
+    // Luces direccionales
+    lightD[0].direction   = glm::vec3(-1.0, 0.0, 0.0);
+    lightD[0].ambient     = glm::vec3( 0.1, 0.1, 0.1);
+    lightD[0].diffuse     = glm::vec3( 0.7, 0.7, 0.7);
+    lightD[0].specular    = glm::vec3( 0.7, 0.7, 0.7);
+    
+    // Luces posicionales
+    lightP[0].position    = glm::vec3(0.0, 3.0, 3.0);
+    lightP[0].ambient     = glm::vec3(0.2, 0.2, 0.2);
+    lightP[0].diffuse     = glm::vec3(0.9, 0.9, 0.9);
+    lightP[0].specular    = glm::vec3(0.9, 0.9, 0.9);
+    lightP[0].c0          = 1.00;
+    lightP[0].c1          = 0.22;
+    lightP[0].c2          = 0.20;
+    
+    // Luces focales
+    lightF[0].position    = glm::vec3(-2.0,  2.0,  5.0);
+    lightF[0].direction   = glm::vec3( 2.0, -2.0, -5.0);
+    lightF[0].ambient     = glm::vec3( 0.2,  0.2,  0.2);
+    lightF[0].diffuse     = glm::vec3( 0.9,  0.9,  0.9);
+    lightF[0].specular    = glm::vec3( 0.9,  0.9,  0.9);
+    lightF[0].innerCutOff = 10.0;
+    lightF[0].outerCutOff = lightF[0].innerCutOff + 5.0;
+    lightF[0].c0          = 1.000;
+    lightF[0].c1          = 0.090;
+    lightF[0].c2          = 0.032;
+    
+    lightF[1].position    = glm::vec3( 2.0,  2.0,  5.0);
+    lightF[1].direction   = glm::vec3(-2.0, -2.0, -5.0);
+    lightF[1].ambient     = glm::vec3( 0.2,  0.2,  0.2);
+    lightF[1].diffuse     = glm::vec3( 0.9,  0.9,  0.9);
+    lightF[1].specular    = glm::vec3( 0.9,  0.9,  0.9);
+    lightF[1].innerCutOff = 5.0;
+    lightF[1].outerCutOff = lightF[1].innerCutOff + 1.0;
+    lightF[1].c0          = 1.000;
+    lightF[1].c1          = 0.090;
+    lightF[1].c2          = 0.032;
+    
+    // Materiales
+    matRuby.ambient       = glm::vec4(0.174500, 0.011750, 0.011750, 0.55);
+    matRuby.diffuse       = glm::vec4(0.614240, 0.041360, 0.041360, 0.55);
+    matRuby.specular      = glm::vec4(0.727811, 0.626959, 0.626959, 0.55);
+    matRuby.emissive      = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
+    matRuby.shininess     = 76.8;
+    
+    matGold.ambient       = glm::vec4(0.247250, 0.199500, 0.074500, 1.00);
+    matGold.diffuse       = glm::vec4(0.751640, 0.606480, 0.226480, 1.00);
+    matGold.specular      = glm::vec4(0.628281, 0.555802, 0.366065, 1.00);
+    matGold.emissive      = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
+    matGold.shininess     = 51.2;
+    
+    matPolishedBronze.ambient       = glm::vec4(0.25f, 0.148f, 0.06475f, 1.0f);
+    matPolishedBronze.diffuse       = glm::vec4(0.4f, 0.2368f, 0.1036f, 1.0f);
+    matPolishedBronze.specular      = glm::vec4(0.774597f, 0.458561f, 0.200621f, 1.0f);
+    matPolishedBronze.emissive      = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
+    matPolishedBronze.shininess     = 76.8f;
+    
+    matLuces.ambient      = glm::vec4(0.0, 0.0, 0.0, 1.0);
+    matLuces.diffuse      = glm::vec4(0.0, 0.0, 0.0, 1.0);
+    matLuces.specular     = glm::vec4(0.0, 0.0, 0.0, 1.0);
+    matLuces.emissive     = glm::vec4(1.0, 1.0, 1.0, 1.0);
+    matLuces.shininess    = 1.0;
+    
+    texPlano.diffuse     = textureRocks.getTexture();
+    texPlano.specular    = textureRocks.getTexture();
+    texPlano.emissive    = textureNoEmissive.getTexture();
+    texPlano.normal      = 0;
+    texPlano.shininess   = 76.8;
+    
+    texEsfera.diffuse     = textureDiscoDiffuse.getTexture();
+    texEsfera.specular    = textureDiscoDiffuse.getTexture();
+    texEsfera.emissive    = textureEmissive.getTexture();
+    texEsfera.normal      = textureDiscoNormal.getTexture();
+    texEsfera.shininess   = 76.8;
 }
 
 void funDisplay() {
@@ -145,6 +269,10 @@ void funDisplay() {
     glm::vec3 lookat(0.0, 0.0, 0.0);
     glm::vec3 up(0.0, 1.0, 0.0);
     glm::mat4 V = glm::lookAt(pos, lookat, up);
+    shaders.setVec3("ucpos",pos);
+    
+    // Fijar luces
+    setLights(P,V);
 
     // Dibujamos escena
     drawSuelo(P, V, I);
@@ -157,14 +285,51 @@ void funDisplay() {
     glutSwapBuffers();
 }
 
-void funReshape(int wnew, int hnew) {
+void setLights(glm::mat4 P, glm::mat4 V) {
+    shaders.setLight("ulightG",lightG);
+    for(int i=0; i<NLD; i++) shaders.setLight("ulightD["+toString(i)+"]",lightD[i]);
+    for(int i=0; i<NLP; i++) shaders.setLight("ulightP["+toString(i)+"]",lightP[i]);
+    for(int i=0; i<NLF; i++) shaders.setLight("ulightF["+toString(i)+"]",lightF[i]);
     
-    // Configuración del Viewport
-    glViewport(0, 0, wnew, hnew);
-    
-    // Captura de w y h
-    w = wnew;
-    h = hnew;
+    for(int i=0; i<NLP; i++) {
+        glm::mat4 M = glm::scale(glm::translate(I,lightP[i].position),glm::vec3(0.1));
+        drawObjectMat(modelEsfera,matLuces,P,V,M);
+    }
+
+    for(int i=0; i<NLF; i++) {
+        glm::mat4 M = glm::scale(glm::translate(I,lightF[i].position),glm::vec3(0.025));
+        drawObjectMat(modelEsfera,matLuces,P,V,M);
+    }
+}
+
+void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    shaders.setMat4("uN", glm::transpose(glm::inverse(M)));
+    shaders.setMat4("uM", M);
+    shaders.setMat4("uPVM", P * V * M);
+    //glEnable(GL_POLYGON_OFFSET_FILL);
+    //shaders.setVec3("uColor", color);
+    shaders.setBool("uWithMaterials",true);
+    shaders.setMaterial("umaterial",material);
+    model.renderModel(GL_FILL);
+    //glDisable(GL_POLYGON_OFFSET_FILL);
+
+    /*shaders.setVec3("uColor", glm::vec3(color.r * 0.75,
+            color.g * 0.75,
+            color.b * 0.75));
+    model.renderModel(GL_LINE);*/
+}
+
+void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    shaders.setMat4("uN", glm::transpose(glm::inverse(M)));
+    shaders.setMat4("uM", M);
+    shaders.setMat4("uPVM", P * V * M);
+    shaders.setBool("uWithMaterials",false);
+    if(textures.normal!=0) shaders.setBool("uWithNormals",true);
+    else                   shaders.setBool("uWithNormals",false);
+    shaders.setTextures("utextures",textures);
+    model.renderModel(GL_FILL);
 }
 
 void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -174,7 +339,7 @@ void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 TPlane = glm::translate(I, glm::vec3(0.0, 0.0, 0.0));
 
     /* Dibuja el suelo */
-    drawObject(modelPlano, glm::vec3(0.40, 0.40, 0.40), P, V, M * SPlane * TPlane);
+    drawObjectTex(modelPlano, texPlano, P, V, M * SPlane * TPlane);
 }
 
 void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -186,21 +351,7 @@ void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 TWindow = glm::translate(I, glm::vec3(0.0, 2.0, 0.0));
 
     /* Dibuja el suelo */
-    drawObject(modelPlano, glm::vec3(0.40, 0.40, 0.40), P, V, M * RWindow * SWindow * TWindow);
-}
-
-void drawObject(Model model, glm::vec3 color, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-
-    shaders.setMat4("uPVM", P * V * M);
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    shaders.setVec3("uColor", color);
-    model.renderModel(GL_FILL);
-    glDisable(GL_POLYGON_OFFSET_FILL);
-
-    shaders.setVec3("uColor", glm::vec3(color.r * 0.75,
-            color.g * 0.75,
-            color.b * 0.75));
-    model.renderModel(GL_LINE);
+    drawObjectMat(modelPlano, matPolishedBronze, P, V, M * RWindow * SWindow * TWindow);
 }
 
 void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -229,7 +380,7 @@ void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 S_esfera = glm::scale(I, glm::vec3(0.5, 0.2, 0.5));
 
     /* Dibuja el cuerpo */
-    drawObject(modelEsfera, glm::vec3(0.0, 1.0, 0.0), P, V, M * S_esfera);
+    drawObjectTex(modelEsfera, texEsfera, P, V, M * S_esfera);
 }
 
 void drawBrazos(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -246,19 +397,19 @@ void drawBrazos(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     /* Dibuja cinco brazos */
     // TODO Refactorizar
-    drawObject(modelCilindro, glm::vec3(0.0, 0.0, 1.0), P, V,
+    drawObjectMat(modelCilindro, matGold, P, V,
             M * T_cilindro * R_cilindro * S_cilindro);
 
-    drawObject(modelCilindro, glm::vec3(0.0, 0.0, 1.0), P, V,
+    drawObjectMat(modelCilindro, matGold, P, V,
             M * R72 * T_cilindro * R_cilindro * S_cilindro);
 
-    drawObject(modelCilindro, glm::vec3(0.0, 0.0, 1.0), P, V,
+    drawObjectMat(modelCilindro, matGold, P, V,
             M * R72 * R72 * T_cilindro * R_cilindro * S_cilindro);
 
-    drawObject(modelCilindro, glm::vec3(0.0, 0.0, 1.0), P, V,
+    drawObjectMat(modelCilindro, matGold, P, V,
             M * R72 * R72 * R72 * T_cilindro * R_cilindro * S_cilindro);
 
-    drawObject(modelCilindro, glm::vec3(0.0, 0.0, 1.0), P, V,
+    drawObjectMat(modelCilindro, matGold, P, V,
             M * R72 * R72 * R72 * R72 * T_cilindro * R_cilindro * S_cilindro);
 }
 
@@ -307,7 +458,7 @@ void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 S_cilindro = glm::scale(I, glm::vec3(0.025, 0.1, 0.025));
     glm::mat4 T_cilindro = glm::translate(I, glm::vec3(0.0, 1.0, 0.0));
 
-    drawObject(modelCilindro, glm::vec3(1.0, 1.0, 0.0), P, V,
+    drawObjectMat(modelCilindro, matPolishedBronze, P, V,
             M * S_cilindro * T_cilindro);
 }
 
@@ -316,7 +467,7 @@ void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 S_esfera = glm::scale(I, glm::vec3(0.075, 0.075, 0.075));
 
     /* Dibuja el cuerpo */
-    drawObject(modelEsfera, glm::vec3(1.0, 0.0, 1.0), P, V, M * S_esfera);
+    drawObjectTex(modelEsfera, texEsfera, P, V, M * S_esfera);
 }
 
 void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -332,10 +483,10 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     /* Dibuja cuatro aspas */
     // TODO Refactorizar
-    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M * R_anim * T_cono * R_cono * S_cono);
-    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M * R_anim * R90 * T_cono * R_cono * S_cono);
-    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M * R_anim * R90 * R90 * T_cono * R_cono * S_cono);
-    drawObject(modelCono, glm::vec3(1.0, 0.0, 0.0), P, V, M * R_anim * R90 * R90 * R90 * T_cono * R_cono * S_cono);
+    drawObjectMat(modelCono, matRuby, P, V, M * R_anim * T_cono * R_cono * S_cono);
+    drawObjectMat(modelCono, matRuby, P, V, M * R_anim * R90 * T_cono * R_cono * S_cono);
+    drawObjectMat(modelCono, matRuby, P, V, M * R_anim * R90 * R90 * T_cono * R_cono * S_cono);
+    drawObjectMat(modelCono, matRuby, P, V, M * R_anim * R90 * R90 * R90 * T_cono * R_cono * S_cono);
 }
 
 void funTimer(int ignore) {
@@ -469,4 +620,14 @@ void funMotion(int x, int y) {
     if ((calculoAlphaY >= (-89)) && (calculoAlphaY <= 89)) {
         alphaY = ((calculoAlphaY * M_PI) / 180); // Resultado en RADIANES
     }
+}
+
+void funReshape(int wnew, int hnew) {
+    
+    // Configuración del Viewport
+    glViewport(0, 0, wnew, hnew);
+    
+    // Captura de w y h
+    w = wnew;
+    h = hnew;
 }
