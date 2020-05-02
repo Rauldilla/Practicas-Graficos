@@ -377,7 +377,7 @@ void drawDron(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     /* Configuración del cuerpo */
-    glm::mat4 S_esfera = glm::scale(I, glm::vec3(0.5, 0.2, 0.5));
+    glm::mat4 S_esfera = glm::scale(I, glm::vec3(0.25, 0.1, 0.25));
 
     /* Dibuja el cuerpo */
     drawObjectTex(modelEsfera, texEsfera, P, V, M * S_esfera);
@@ -464,7 +464,7 @@ void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
-    glm::mat4 S_esfera = glm::scale(I, glm::vec3(0.075, 0.075, 0.075));
+    glm::mat4 S_esfera = glm::scale(I, glm::vec3(0.0375, 0.0375, 0.0375));
 
     /* Dibuja el cuerpo */
     drawObjectTex(modelEsfera, texEsfera, P, V, M * S_esfera);
