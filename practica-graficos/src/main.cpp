@@ -248,16 +248,16 @@ void funInit() {
     matLuces.shininess = 1.0;
 
     texPlano.diffuse = textureRocks.getTexture();
-    texPlano.specular = textureRocks.getTexture();
+    texPlano.specular = textureHexagon.getTexture();
     texPlano.emissive = textureEmissive.getTexture();
     texPlano.normal = 0;
-    texPlano.shininess = 76.8;
+    texPlano.shininess = 10.0;
 
     texEsfera.diffuse = textureDiscoDiffuse.getTexture();
     texEsfera.specular = textureDiscoDiffuse.getTexture();
-    texEsfera.emissive = textureEmissive.getTexture();
+    texEsfera.emissive = textureNoEmissive.getTexture();
     texEsfera.normal = textureDiscoNormal.getTexture();
-    texEsfera.shininess = 76.8;
+    texEsfera.shininess = 10.0;
 }
 
 void funDisplay() {
