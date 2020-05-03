@@ -166,13 +166,13 @@ void funInit() {
     modelEsfera.initModel("resources/models/sphere.obj");
 
     // Texturas
-    textureDiscoDiffuse.initTexture("resources/textures/imgDisco1.png");
-    textureDiscoNormal.initTexture("resources/textures/imgDisco2.png");
-    textureEmissive.initTexture("resources/textures/imgEmissive.png");
-    textureHexagon.initTexture("resources/textures/imgHexagon.png");
-    textureNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
-    textureRocks.initTexture("resources/textures/imgRocks.png");
-    textureLuces.initTexture("resources/textures/imgLuces.png");
+    textureNoEmissive.initTexture("resources/textures/img1.png");
+    textureEmissive.initTexture("resources/textures/img2.png");
+    textureHexagon.initTexture("resources/textures/img3.png");
+    textureLuces.initTexture("resources/textures/img4.png");
+    textureRocks.initTexture("resources/textures/img5.png");
+    textureDiscoDiffuse.initTexture("resources/textures/img6.png");
+    textureDiscoNormal.initTexture("resources/textures/img7.png");
 
     // Luz ambiental global
     lightG.ambient = glm::vec3(0.5, 0.5, 0.5);
