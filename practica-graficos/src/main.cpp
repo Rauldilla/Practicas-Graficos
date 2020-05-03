@@ -85,6 +85,7 @@ float fovyModifier = 60.0;
 float alphaX = 0.0;
 float alphaY = 0.174533;
 bool aspasMoviendose = true;
+float intensidadLD = 0.7; // Intensidad luz focal
 
 // Luces
 #define   NLD 1
@@ -566,26 +567,28 @@ void funKeyboard(unsigned char key, int x, int y) {
             else
                 aspasMoviendose = true;
             break;
-        // TODO Ver manera de mejorar esto
+        // TODO Ver manera de mejorar esto (incluido establecer intensidad)
         // TODO Ver qué pasa si cambio solo el ambient
         case 'd':
-            lightD[0].diffuse.r -= 0.1;
-            lightD[0].diffuse.g -= 0.1;
-            lightD[0].diffuse.b -= 0.1;
-            
-            lightD[0].specular.r -= 0.1;
-            lightD[0].specular.g -= 0.1;
-            lightD[0].specular.b -= 0.1;
+            if(intensidadLD > 0) {
+                intensidadLD -= 0.1;
+            }
             break;
         case 'D':
-            lightD[0].diffuse.r += 0.1;
-            lightD[0].diffuse.g += 0.1;
-            lightD[0].diffuse.b += 0.1;
-            
-            lightD[0].specular.r -= 0.1;
-            lightD[0].specular.g -= 0.1;
-            lightD[0].specular.b -= 0.1;
+            if(intensidadLD < 1) {
+                intensidadLD += 0.1;
+            }
     }
+    
+    // Establecer intensidad
+    lightD[0].diffuse.r = intensidadLD;
+    lightD[0].diffuse.g = intensidadLD;
+    lightD[0].diffuse.b = intensidadLD;
+
+    lightD[0].specular.r = intensidadLD;
+    lightD[0].specular.g = intensidadLD;
+    lightD[0].specular.b = intensidadLD;
+    
     glutPostRedisplay();
 
 }
