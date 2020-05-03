@@ -151,6 +151,7 @@ void funInit() {
     //glPolygonOffset(1.0, 1.0);
     
     // Transparencias
+    glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -176,13 +177,13 @@ void funInit() {
     lightG.ambient = glm::vec3(0.5, 0.5, 0.5);
     
     // Luces direccionales
-    lightD[0].direction   = glm::vec3(-1.0, 0.0, 0.0);
-    lightD[0].ambient     = glm::vec3( 0.1, 0.1, 0.1);
-    lightD[0].diffuse     = glm::vec3( 0.7, 0.7, 0.7);
-    lightD[0].specular    = glm::vec3( 0.7, 0.7, 0.7);
+    lightD[0].direction   = glm::vec3(0.0, -1.0, 0.0);
+    lightD[0].ambient     = glm::vec3(0.1, 0.1, 0.1);
+    lightD[0].diffuse     = glm::vec3(0.7, 0.7, 0.7);
+    lightD[0].specular    = glm::vec3(0.7, 0.7, 0.7);
     
     // Luces posicionales
-    lightP[0].position    = glm::vec3(0.0, 3.0, 3.0);
+    lightP[0].position    = glm::vec3(0.0, 0.2, -1.5);
     lightP[0].ambient     = glm::vec3(0.2, 0.2, 0.2);
     lightP[0].diffuse     = glm::vec3(0.9, 0.9, 0.9);
     lightP[0].specular    = glm::vec3(0.9, 0.9, 0.9);
@@ -191,13 +192,14 @@ void funInit() {
     lightP[0].c2          = 0.20;
     
     // Luces focales
-    lightF[0].position    = glm::vec3(-2.0,  2.0,  5.0);
-    lightF[0].direction   = glm::vec3( 2.0, -2.0, -5.0);
+    // TODO Ver más tarde lo del innerCutOff y outerCutOff para que se vea como el del profe
+    lightF[0].position    = glm::vec3(3.0, 3.0, -3.0);
+    lightF[0].direction   = glm::vec3(-3.0, -3.0, 3.0);
     lightF[0].ambient     = glm::vec3( 0.2,  0.2,  0.2);
     lightF[0].diffuse     = glm::vec3( 0.9,  0.9,  0.9);
     lightF[0].specular    = glm::vec3( 0.9,  0.9,  0.9);
-    lightF[0].innerCutOff = 10.0;
-    lightF[0].outerCutOff = lightF[0].innerCutOff + 5.0;
+    lightF[0].innerCutOff = 9.0;
+    lightF[0].outerCutOff = lightF[0].innerCutOff + 2.0;
     lightF[0].c0          = 1.000;
     lightF[0].c1          = 0.090;
     lightF[0].c2          = 0.032;
@@ -305,13 +307,13 @@ void setLights(glm::mat4 P, glm::mat4 V) {
     for(int i=0; i<NLF; i++) shaders.setLight("ulightF["+toString(i)+"]",lightF[i]);
     
     for(int i=0; i<NLP; i++) {
-        glm::mat4 M = glm::scale(glm::translate(I,lightP[i].position),glm::vec3(0.1));
-        drawObjectMat(modelEsfera,matLuces,P,V,M);
+        glm::mat4 M = glm::scale(glm::translate(I,lightP[i].position),glm::vec3(0.025));
+        drawObjectMat(modelEsfera, matLuces, P, V, M);
     }
 
     for(int i=0; i<NLF; i++) {
         glm::mat4 M = glm::scale(glm::translate(I,lightF[i].position),glm::vec3(0.025));
-        drawObjectMat(modelEsfera,matLuces,P,V,M);
+        drawObjectMat(modelEsfera, matLuces, P, V, M);
     }
 }
 
@@ -563,6 +565,26 @@ void funKeyboard(unsigned char key, int x, int y) {
                 aspasMoviendose = false;
             else
                 aspasMoviendose = true;
+            break;
+        // TODO Ver manera de mejorar esto
+        // TODO Ver qué pasa si cambio solo el ambient
+        case 'd':
+            lightD[0].diffuse.r -= 0.1;
+            lightD[0].diffuse.g -= 0.1;
+            lightD[0].diffuse.b -= 0.1;
+            
+            lightD[0].specular.r -= 0.1;
+            lightD[0].specular.g -= 0.1;
+            lightD[0].specular.b -= 0.1;
+            break;
+        case 'D':
+            lightD[0].diffuse.r += 0.1;
+            lightD[0].diffuse.g += 0.1;
+            lightD[0].diffuse.b += 0.1;
+            
+            lightD[0].specular.r -= 0.1;
+            lightD[0].specular.g -= 0.1;
+            lightD[0].specular.b -= 0.1;
     }
     glutPostRedisplay();
 
