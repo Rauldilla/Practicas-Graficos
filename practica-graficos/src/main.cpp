@@ -203,8 +203,8 @@ void funInit() {
     lightF[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
     lightF[0].specular = glm::vec3(0.9, 0.9, 0.9);
     lightF[0].innerCutOff = 9.0;
-    lightF[0].outerCutOff = lightF[0].innerCutOff + 2.0;
-    lightF[0].c0 = 1.000;
+    lightF[0].outerCutOff = lightF[0].innerCutOff + 1.0;
+    lightF[0].c0 = 0.090;
     lightF[0].c1 = 0.090;
     lightF[0].c2 = 0.032;
 
