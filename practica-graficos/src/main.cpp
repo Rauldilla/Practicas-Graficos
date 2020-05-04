@@ -197,7 +197,6 @@ void funInit() {
     lightP[0].c2 = 0.20;
 
     // Luces focales
-    // TODO Ver más tarde lo del innerCutOff y outerCutOff para que se vea como el del profe
     lightF[0].position = glm::vec3(3.0, 3.0, -3.0);
     lightF[0].direction = glm::vec3(-3.0, -3.0, 3.0);
     lightF[0].ambient = glm::vec3(0.2, 0.2, 0.2);
