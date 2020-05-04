@@ -414,7 +414,6 @@ void drawCuerpo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 }
 
 void drawCupula(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-    // TODO Revisar tamaño y posición
     glm::mat4 S_cupula = glm::scale(I, glm::vec3(0.15, 0.15, 0.15));
     glm::mat4 T_cupula = glm::translate(I, glm::vec3(0.0, 0.8, 0.0));
 
@@ -432,11 +431,9 @@ void drawBrazos(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 R_cilindro = glm::rotate(I, glm::radians(rotZ), glm::vec3(0.0, 0.0, 1.0));
     glm::mat4 R72 = glm::rotate(I, glm::radians(rotY), glm::vec3(0.0, 1.0, 0.0));
     glm::mat4 S_cilindro = glm::scale(I, glm::vec3(0.05, 0.5, 0.05));
-    // TODO mover T_cilindro fuera del método
     glm::mat4 T_cilindro = glm::translate(I, glm::vec3(0.5, 0.0, 0.0));
 
     /* Dibuja cinco brazos */
-    // TODO Refactorizar
     drawObjectMat(modelCilindro, matGold, P, V,
             M * T_cilindro * R_cilindro * S_cilindro);
 
@@ -522,7 +519,6 @@ void drawAspas(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 T_cono = glm::translate(I, glm::vec3(0.16, 0.0, 0.0));
 
     /* Dibuja cuatro aspas */
-    // TODO Refactorizar
     drawObjectMat(modelCono, matRuby, P, V, M * R_anim * T_cono * R_cono * S_cono);
     drawObjectMat(modelCono, matRuby, P, V, M * R_anim * R90 * T_cono * R_cono * S_cono);
     drawObjectMat(modelCono, matRuby, P, V, M * R_anim * R90 * R90 * T_cono * R_cono * S_cono);
@@ -564,7 +560,6 @@ void funKeyboard(unsigned char key, int x, int y) {
             }
             break;
         case 'Y':
-            // TODO check this
             if (animYdron >= 0.25) {
                 animYdron -= 0.05;
             }
@@ -582,8 +577,6 @@ void funKeyboard(unsigned char key, int x, int y) {
             else
                 aspasMoviendose = true;
             break;
-            // TODO Ver manera de mejorar esto (incluido establecer intensidad)
-            // TODO Ver qué pasa si cambio solo el ambient
         case 'd':
             if (intensidadLD > 0) {
                 intensidadLD -= 0.1;
@@ -594,7 +587,6 @@ void funKeyboard(unsigned char key, int x, int y) {
                 intensidadLD += 0.1;
             }
             break;
-        // TODO Ver si puedo mejorar esto
         case 'f':
             if(lightF[0].diffuse != glm::vec3(0.0)){
                 lightF[0].diffuse = glm::vec3(0.0);
