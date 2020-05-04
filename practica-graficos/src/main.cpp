@@ -91,7 +91,7 @@ float intensidadLD = 0.7; // Intensidad luz focal
 // Luces
 #define   NLD 1
 #define   NLP 1
-#define   NLF 2
+#define   NLF 1
 Light lightG;
 Light lightD[NLD];
 Light lightP[NLP];
@@ -204,17 +204,6 @@ void funInit() {
     lightF[0].c0 = 1.000;
     lightF[0].c1 = 0.090;
     lightF[0].c2 = 0.032;
-
-    lightF[1].position = glm::vec3(2.0, 2.0, 5.0);
-    lightF[1].direction = glm::vec3(-2.0, -2.0, -5.0);
-    lightF[1].ambient = glm::vec3(0.2, 0.2, 0.2);
-    lightF[1].diffuse = glm::vec3(0.9, 0.9, 0.9);
-    lightF[1].specular = glm::vec3(0.9, 0.9, 0.9);
-    lightF[1].innerCutOff = 5.0;
-    lightF[1].outerCutOff = lightF[1].innerCutOff + 1.0;
-    lightF[1].c0 = 1.000;
-    lightF[1].c1 = 0.090;
-    lightF[1].c2 = 0.032;
 
     // Materiales
     matRuby.ambient = glm::vec4(0.174500, 0.011750, 0.011750, 1.00);
@@ -590,6 +579,16 @@ void funKeyboard(unsigned char key, int x, int y) {
         case 'D':
             if (intensidadLD < 1) {
                 intensidadLD += 0.1;
+            }
+            break;
+        case 'f':
+            // TODO Ver si puedo mejorar esto
+            if(lightF[0].diffuse != glm::vec3(0.0)){
+                lightF[0].diffuse = glm::vec3(0.0);
+                lightF[0].specular = glm::vec3(0.0);
+            } else {
+                lightF[0].diffuse = glm::vec3(0.9);
+                lightF[0].specular = glm::vec3(0.9);
             }
     }
 
