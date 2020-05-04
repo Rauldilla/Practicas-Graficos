@@ -594,13 +594,8 @@ void funKeyboard(unsigned char key, int x, int y) {
     }
 
     // Establecer intensidad
-    lightD[0].diffuse.r = intensidadLD;
-    lightD[0].diffuse.g = intensidadLD;
-    lightD[0].diffuse.b = intensidadLD;
-
-    lightD[0].specular.r = intensidadLD;
-    lightD[0].specular.g = intensidadLD;
-    lightD[0].specular.b = intensidadLD;
+    lightD[0].diffuse = glm::vec3(intensidadLD);
+    lightD[0].specular = glm::vec3(intensidadLD);
 
     glutPostRedisplay();
 
