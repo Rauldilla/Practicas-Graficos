@@ -87,6 +87,9 @@ float alphaX = 0.0;
 float alphaY = 0.174533;
 bool aspasMoviendose = true;
 float intensidadLD = 0.7; // Intensidad luz focal
+float PosLuzP = 0.0;
+float PosLuzP_X = 0.0;
+float PosLuzP_Z = -1.5;
 
 // Luces
 #define   NLD 1
@@ -184,7 +187,7 @@ void funInit() {
     lightD[0].specular = glm::vec3(0.7, 0.7, 0.7);
 
     // Luces posicionales
-    lightP[0].position = glm::vec3(0.0, 0.2, -1.5);
+    lightP[0].position = glm::vec3(PosLuzP_X, 0.2, PosLuzP_Z);
     lightP[0].ambient = glm::vec3(0.2, 0.2, 0.2);
     lightP[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
     lightP[0].specular = glm::vec3(0.9, 0.9, 0.9);
@@ -561,7 +564,11 @@ void funKeyboard(unsigned char key, int x, int y) {
             }
             break;
         case 'p':
-            std::cout << animYdron << "\n";
+            PosLuzP++;
+            PosLuzP_X = 1.5 * glm::sin(glm::radians(PosLuzP));
+            PosLuzP_Z = -1.5 * glm::cos(glm::radians(PosLuzP));
+
+            lightP[0].position = glm::vec3(PosLuzP_X, 0.2, PosLuzP_Z);
             break;
         case 's':
             if (aspasMoviendose)
@@ -581,8 +588,8 @@ void funKeyboard(unsigned char key, int x, int y) {
                 intensidadLD += 0.1;
             }
             break;
+        // TODO Ver si puedo mejorar esto
         case 'f':
-            // TODO Ver si puedo mejorar esto
             if(lightF[0].diffuse != glm::vec3(0.0)){
                 lightF[0].diffuse = glm::vec3(0.0);
                 lightF[0].specular = glm::vec3(0.0);
