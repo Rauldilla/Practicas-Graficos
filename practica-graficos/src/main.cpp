@@ -108,6 +108,7 @@ Material matPolishedBronze;
 Material matLuces;
 Textures texPlano;
 Textures texEsfera;
+Textures texLuz;
 
 int main(int argc, char** argv) {
     // Inicializamos GLUT
@@ -250,6 +251,12 @@ void funInit() {
     texEsfera.emissive = textureNoEmissive.getTexture();
     texEsfera.normal = textureDiscoNormal.getTexture();
     texEsfera.shininess = 10.0;
+    
+    texLuz.diffuse = textureLuces.getTexture();
+    texLuz.specular = textureLuces.getTexture();
+    texLuz.emissive = textureNoEmissive.getTexture();
+    texLuz.normal = 0;
+    texLuz.shininess = 10.0;
 }
 
 void funDisplay() {
@@ -304,12 +311,12 @@ void setLights(glm::mat4 P, glm::mat4 V) {
 
     for (int i = 0; i < NLP; i++) {
         glm::mat4 M = glm::scale(glm::translate(I, lightP[i].position), glm::vec3(0.025));
-        drawObjectMat(modelEsfera, matLuces, P, V, M);
+        drawObjectTex(modelEsfera, texLuz, P, V, M);
     }
 
     for (int i = 0; i < NLF; i++) {
         glm::mat4 M = glm::scale(glm::translate(I, lightF[i].position), glm::vec3(0.025));
-        drawObjectMat(modelEsfera, matLuces, P, V, M);
+        drawObjectTex(modelEsfera, texLuz, P, V, M);
     }
 }
 
