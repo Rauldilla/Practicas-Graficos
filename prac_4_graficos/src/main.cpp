@@ -69,7 +69,7 @@ int h = 600;
 float fovy = 60.0;
 float rotX = 0.0;
 float rotY = 0.0;
-float desZ = 0.0;
+float extensionSoporteY = 0.0;
 float alphaX = 0.0;
 float alphaY = -0.174533;
 
@@ -82,6 +82,7 @@ Light lightD[NLD];
 Light lightP[NLP];
 Light lightF[NLF];
 Material matCyanPlastic;
+Material matCopper;
 Textures texCube;
 Textures texWindow;
 Textures texPlano;
@@ -205,6 +206,12 @@ void funInit() {
     matCyanPlastic.specular = glm::vec4(0.50196078f,0.50196078f,0.50196078f,1.0f);
     matCyanPlastic.emissive = glm::vec4(0.0, 0.0, 0.0, 0.0);
     matCyanPlastic.shininess = 32.0f;
+    
+    matCopper.ambient = glm::vec4(0.19125f, 0.0735f, 0.0225f, 1.0f);
+    matCopper.diffuse = glm::vec4(0.7038f, 0.27048f, 0.0828f, 1.0f);
+    matCopper.specular = glm::vec4(0.256777f, 0.137622f, 0.086014f, 1.0f);
+    matCopper.emissive = glm::vec4(0.0, 0.0, 0.0, 1.0);
+    matCopper.shininess = 12.8f;
             
     texCube.diffuse = textureCubeDiffuse.getTexture();
     texCube.specular = textureCubeSpecular.getTexture();
@@ -343,10 +350,14 @@ void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 }
 
 void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    
+    glm::mat4 TExtension = glm::translate(I, glm::vec3(0.0, extensionSoporteY, 0.0));
+    
     drawBase(P, V, M);
-    drawArticulacion(P, V, M);
     drawSoporte(P, V, M);
-    drawGarras(P, V, M);
+    drawSoporte(P, V, M * TExtension);
+    drawArticulacion(P, V, M * TExtension);
+    drawGarras(P, V, M * TExtension);
 }
 
 void drawBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -355,16 +366,20 @@ void drawBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 SBase = glm::scale(I, glm::vec3(BASE_SIZE, 0.1, BASE_SIZE));
     glm::mat4 TBase = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
     // TODO Mirar textura predominante (1.01 a 1.0)
-    glm::mat4 TBase2 = glm::translate(I, glm::vec3(0.0, -1.01, 0.0));
+    glm::mat4 TBase_Colocacion = glm::translate(I, glm::vec3(0.0, -1.01, 0.0));
     
-    drawObjectMat(modelCubo, matCyanPlastic, P, V, M * TBase * SBase * TBase2);
-} 
-
-void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-    
+    drawObjectMat(modelCubo, matCyanPlastic, P, V, M * TBase * SBase * TBase_Colocacion);
 }
 
 void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    glm::mat4 SSoporte = glm::scale(I, glm::vec3(0.15, 0.5, 0.15));
+    glm::mat4 TSoporte = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
+    glm::mat4 TSoporte_Colocacion = glm::translate(I, glm::vec3(0.0, -1.01, 0.0));
+    
+    drawObjectMat(modelCilindro, matCopper, P, V, M * TSoporte * SSoporte * TSoporte_Colocacion);
+}
+
+void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
 }
 
@@ -395,11 +410,17 @@ void funSpecial(int key, int x, int y) {
 void funKeyboard(unsigned char key, int x, int y) {
 
     switch (key) {
-        case 'e': desZ -= 0.1f;
+        case 's': 
+            if (extensionSoporteY >= -1.0) {
+                extensionSoporteY -= 0.1f;
+            }
             break;
-        case 'd': desZ += 0.1f;
+        case 'S': 
+            if (extensionSoporteY < -0.1) {
+                extensionSoporteY += 0.1f;
+            }
             break;
-        default: desZ = 0.0f;
+        default: extensionSoporteY = 0.0f;
             break;
     }
     glutPostRedisplay();
