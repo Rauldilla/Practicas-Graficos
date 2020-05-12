@@ -34,6 +34,11 @@ void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm
 void setLights(glm::mat4 P, glm::mat4 V);
 
 void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawBase(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
 // Shaders
 Shaders shaders;
@@ -42,6 +47,7 @@ Shaders shaders;
 Model modelPlano;
 Model modelEsfera;
 Model modelCubo;
+Model modelCilindro;
 
 // Texturas
 Texture textureEmissive;
@@ -52,6 +58,7 @@ Texture textureWallDiffuse;
 Texture textureWallSpecular;
 Texture textureWallNormal;
 Texture textureLights;
+Texture textureGlass;
 
 // Viewport
 int w = 600;
@@ -78,6 +85,7 @@ Textures texCube;
 Textures texWindow;
 Textures texPlano;
 Textures texLuz;
+Textures texCristal;
 
 int main(int argc, char** argv) {
 
@@ -136,6 +144,7 @@ void funInit() {
     modelPlano.initModel("resources/models/plane.obj");
     modelEsfera.initModel("resources/models/sphere.obj");
     modelCubo.initModel("resources/models/cube.obj");
+    modelCilindro.initModel("resources/models/cylinder.obj");
 
     // Texturas
     textureEmissive.initTexture("resources/textures/imgEmissive.png");
@@ -146,6 +155,7 @@ void funInit() {
     textureWallSpecular.initTexture("resources/textures/imgWallSpecular.png");
     textureWallNormal.initTexture("resources/textures/imgWallNormal.png");
     textureLights.initTexture("resources/textures/imgLuces.png");
+    textureGlass.initTexture("resources/textures/imgGlass.png");
 
     // Luz ambiental global
     lightG.ambient = glm::vec3(0.9, 0.9, 0.9);
@@ -212,6 +222,12 @@ void funInit() {
     texLuz.emissive = textureNoEmissive.getTexture();
     texLuz.normal = 0;
     texLuz.shininess = 10.0;
+    
+    texCristal.diffuse = textureGlass.getTexture();
+    texCristal.specular = textureGlass.getTexture();
+    texCristal.emissive = textureNoEmissive.getTexture();
+    texCristal.normal = 0;
+    texCristal.shininess = 10.0;
 
 }
 
@@ -253,8 +269,10 @@ void funDisplay() {
 
     // Fijamos las luces
     setLights(P, V);
-
-    // Dibujamos la escena
+    
+    // Dibujar escena
+    drawGancho(P, V, I);
+    
     drawVentana(P, V, I);
 
     // Intercambiamos los buffers
@@ -316,9 +334,32 @@ void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     /* Dibuja el suelo */
     glDepthMask(GL_FALSE);
-    drawObjectMat(modelPlano, matSilver, P, V, M * SWindow * TWindow);
-    drawObjectMat(modelPlano, matSilver, P, V, M * SWindow * TWindow * RSecond_Window);
+    drawObjectTex(modelPlano, texCristal, P, V, M * SWindow * TWindow);
+    drawObjectTex(modelPlano, texCristal, P, V, M * SWindow * TWindow * RSecond_Window);
     glDepthMask(GL_TRUE);
+}
+
+void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    drawBase(P, V, M);
+    drawArticulacion(P, V, M);
+    drawSoporte(P, V, M);
+    drawGarras(P, V, M);
+}
+
+void drawBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    
+} 
+
+void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    
+}
+
+void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    
+}
+
+void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M){
+    
 }
 
 void funSpecial(int key, int x, int y) {
