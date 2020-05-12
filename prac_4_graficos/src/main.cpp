@@ -51,6 +51,7 @@ Texture textureCubeSpecular;
 Texture textureWallDiffuse;
 Texture textureWallSpecular;
 Texture textureWallNormal;
+Texture textureLights;
 
 // Viewport
 int w = 600;
@@ -76,6 +77,7 @@ Material matLuces;
 Textures texCube;
 Textures texWindow;
 Textures texPlano;
+Textures texLuz;
 
 int main(int argc, char** argv) {
 
@@ -143,6 +145,7 @@ void funInit() {
     textureWallDiffuse.initTexture("resources/textures/imgWallDiffuse.png");
     textureWallSpecular.initTexture("resources/textures/imgWallSpecular.png");
     textureWallNormal.initTexture("resources/textures/imgWallNormal.png");
+    textureLights.initTexture("resources/textures/imgLuces.png");
 
     // Luz ambiental global
     lightG.ambient = glm::vec3(0.9, 0.9, 0.9);
@@ -203,6 +206,12 @@ void funInit() {
     texPlano.emissive = textureNoEmissive.getTexture();
     texPlano.normal = textureWallNormal.getTexture();
     texPlano.shininess = 51.2;
+    
+    texLuz.diffuse = textureLights.getTexture();
+    texLuz.specular = textureLights.getTexture();
+    texLuz.emissive = textureNoEmissive.getTexture();
+    texLuz.normal = 0;
+    texLuz.shininess = 10.0;
 
 }
 
@@ -262,12 +271,12 @@ void setLights(glm::mat4 P, glm::mat4 V) {
 
     for (int i = 0; i < NLP; i++) {
         glm::mat4 M = glm::scale(glm::translate(I, lightP[i].position), glm::vec3(0.1));
-        drawObjectMat(modelEsfera, matLuces, P, V, M);
+        drawObjectTex(modelEsfera, texLuz, P, V, M);
     }
 
     for (int i = 0; i < NLF; i++) {
         glm::mat4 M = glm::scale(glm::translate(I, lightF[i].position), glm::vec3(0.025));
-        drawObjectMat(modelEsfera, matLuces, P, V, M);
+        drawObjectTex(modelEsfera, texLuz, P, V, M);
     }
 
 }
