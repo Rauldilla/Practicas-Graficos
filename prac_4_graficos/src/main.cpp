@@ -33,7 +33,7 @@ void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm
 void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void setLights(glm::mat4 P, glm::mat4 V);
 
-void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
 // Shaders
 Shaders shaders;
@@ -73,7 +73,7 @@ Light lightG;
 Light lightD[NLD];
 Light lightP[NLP];
 Light lightF[NLF];
-Material matLuces;
+Material matSilver;
 Textures texCube;
 Textures texWindow;
 Textures texPlano;
@@ -189,12 +189,12 @@ void funInit() {
     lightF[1].c2 = 0.032;
 
     // Materiales
-    matLuces.ambient = glm::vec4(0.0, 0.0, 0.0, 1.0);
-    matLuces.diffuse = glm::vec4(0.0, 0.0, 0.0, 1.0);
-    matLuces.specular = glm::vec4(0.0, 0.0, 0.0, 1.0);
-    matLuces.emissive = glm::vec4(1.0, 1.0, 1.0, 1.0);
-    matLuces.shininess = 1.0;
-
+    matSilver.ambient = glm::vec4(0.19225f, 0.19225f, 0.19225f, 0.5);
+    matSilver.diffuse = glm::vec4(0.50754f, 0.50754f, 0.50754f, 0.5);
+    matSilver.specular = glm::vec4(0.508273f, 0.508273f, 0.508273f, 0.5);
+    matSilver.emissive = glm::vec4(0.000000, 0.000000, 0.000000, 0.5);
+    matSilver.shininess = 51.2f;
+    
     texCube.diffuse = textureCubeDiffuse.getTexture();
     texCube.specular = textureCubeSpecular.getTexture();
     texCube.emissive = textureEmissive.getTexture();
@@ -255,7 +255,7 @@ void funDisplay() {
     setLights(P, V);
 
     // Dibujamos la escena
-    drawSuelo(P, V, I);
+    drawVentana(P, V, I);
 
     // Intercambiamos los buffers
     glutSwapBuffers();
@@ -305,18 +305,20 @@ void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm
 
 }
 
-void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     float rotPlane = 180;
 
     /* Configuración del suelo */
-    glm::mat4 SPlane = glm::scale(I, glm::vec3(X_PLANE, 1.0, Z_PLANE));
-    glm::mat4 TPlane = glm::translate(I, glm::vec3(0.0, 0.0, 0.0));
-    glm::mat4 RSecond_Plane = glm::rotate(I, glm::radians(rotPlane), glm::vec3(0.0, 0.0, 1.0));
+    glm::mat4 SWindow = glm::scale(I, glm::vec3(X_PLANE, 1.0, Z_PLANE));
+    glm::mat4 TWindow = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
+    glm::mat4 RSecond_Window = glm::rotate(I, glm::radians(rotPlane), glm::vec3(0.0, 0.0, 1.0));
 
     /* Dibuja el suelo */
-    drawObjectTex(modelPlano, texPlano, P, V, M * SPlane * TPlane);
-    drawObjectTex(modelPlano, texPlano, P, V, M * SPlane * TPlane * RSecond_Plane);
+    glDepthMask(GL_FALSE);
+    drawObjectMat(modelPlano, matSilver, P, V, M * SWindow * TWindow);
+    drawObjectMat(modelPlano, matSilver, P, V, M * SWindow * TWindow * RSecond_Window);
+    glDepthMask(GL_TRUE);
 }
 
 void funSpecial(int key, int x, int y) {
