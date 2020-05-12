@@ -17,6 +17,8 @@ std::string toString(const int &i) {
 }
 
 #define I glm::mat4(1.0)
+#define X_PLANE 3.0
+#define Z_PLANE 3.0
 
 void funInit();
 void funReshape(int w, int h);
@@ -30,31 +32,28 @@ void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm
 void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void setLights(glm::mat4 P, glm::mat4 V);
 
+void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+
 // Shaders
    Shaders shaders;
    
 // Modelos
-   Model modelPlane;
-   Model modelSphere;
-   Model modelCube;
+   Model modelPlano;
+   Model modelEsfera;
+   Model modelCubo;
    
 // Texturas
    Texture textureEmissive;
    Texture textureNoEmissive;
-   Texture textureRuby;
-   Texture textureGold;
-   Texture textureEarth;
-   Texture textureChess;
    Texture textureCubeDiffuse;
    Texture textureCubeSpecular;
-   Texture textureWindow;
    Texture textureWallDiffuse;
    Texture textureWallSpecular;
    Texture textureWallNormal;
     
 // Viewport
-   int w = 500;
-   int h = 500;
+   int w = 600;
+   int h = 600;
    
 // Animaciones
    float fovy   = 60.0;
@@ -62,7 +61,7 @@ void setLights(glm::mat4 P, glm::mat4 V);
    float rotY   =  0.0;
    float desZ   =  0.0;
    float alphaX =  0.0;
-   float alphaY =  0.0;
+   float alphaY =  -0.174533;
    
 // Luces y materiales
    #define   NLD 1
@@ -72,16 +71,10 @@ void setLights(glm::mat4 P, glm::mat4 V);
    Light     lightD[NLD];
    Light     lightP[NLP];
    Light     lightF[NLF];
-   Material  matRuby;
    Material  matLuces;
-   Material  matGold;
-   Textures  texRuby;
-   Textures  texGold;
-   Textures  texEarth;
-   Textures  texChess;
    Textures  texCube;
    Textures  texWindow;
-   Textures  texPlane;
+   Textures  texPlano;
    
 int main(int argc, char** argv) {
 
@@ -127,6 +120,7 @@ void funInit() {
       
  // Test de profundidad
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
     
  // Transparencias
     glEnable(GL_BLEND);
@@ -136,20 +130,15 @@ void funInit() {
     shaders.initShaders("resources/shaders/vshader.glsl","resources/shaders/fshader.glsl");
     
  // Modelos
-    modelPlane.initModel("resources/models/plane.obj");
-    modelSphere.initModel("resources/models/sphere.obj");
-    modelCube.initModel("resources/models/cube.obj");
+    modelPlano.initModel("resources/models/plane.obj");
+    modelEsfera.initModel("resources/models/sphere.obj");
+    modelCubo.initModel("resources/models/cube.obj");
     
  // Texturas
     textureEmissive.initTexture("resources/textures/imgEmissive.png");
     textureNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
-    textureRuby.initTexture("resources/textures/imgRuby.png");
-    textureGold.initTexture("resources/textures/imgGold.png");
-    textureEarth.initTexture("resources/textures/imgEarth.png");
-    textureChess.initTexture("resources/textures/imgChess.png");
     textureCubeDiffuse.initTexture("resources/textures/imgCubeDiffuse.png");
     textureCubeSpecular.initTexture("resources/textures/imgCubeSpecular.png");
-    textureWindow.initTexture("resources/textures/imgWindow.png");
     textureWallDiffuse.initTexture("resources/textures/imgWallDiffuse.png");
     textureWallSpecular.initTexture("resources/textures/imgWallSpecular.png");
     textureWallNormal.initTexture("resources/textures/imgWallNormal.png");
@@ -201,60 +190,18 @@ void funInit() {
     matLuces.specular     = glm::vec4(0.0, 0.0, 0.0, 1.0);
     matLuces.emissive     = glm::vec4(1.0, 1.0, 1.0, 1.0);
     matLuces.shininess    = 1.0;
-    
-    matRuby.ambient       = glm::vec4(0.174500, 0.011750, 0.011750, 0.55);
-    matRuby.diffuse       = glm::vec4(0.614240, 0.041360, 0.041360, 0.55);
-    matRuby.specular      = glm::vec4(0.727811, 0.626959, 0.626959, 0.55);
-    matRuby.emissive      = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
-    matRuby.shininess     = 76.8;  
-    
-    matGold.ambient       = glm::vec4(0.247250, 0.199500, 0.074500, 1.00);
-    matGold.diffuse       = glm::vec4(0.751640, 0.606480, 0.226480, 1.00);
-    matGold.specular      = glm::vec4(0.628281, 0.555802, 0.366065, 1.00);
-    matGold.emissive      = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
-    matGold.shininess     = 51.2;
-    
-    texRuby.diffuse       = textureRuby.getTexture();
-    texRuby.specular      = textureRuby.getTexture();
-    texRuby.emissive      = textureNoEmissive.getTexture();
-    texRuby.normal        = 0;  
-    texRuby.shininess     = 76.8; 
-    
-    texGold.diffuse       = textureGold.getTexture();  
-    texGold.specular      = textureGold.getTexture();  
-    texGold.emissive      = textureNoEmissive.getTexture();
-    texGold.normal        = 0;
-    texGold.shininess     = 51.2;
-    
-    texEarth.diffuse      = textureEarth.getTexture();
-    texEarth.specular     = textureEarth.getTexture();
-    texEarth.emissive     = textureNoEmissive.getTexture();
-    texEarth.normal       = 0;
-    texEarth.shininess    = 10.0;
-    
-    texChess.diffuse      = textureChess.getTexture();
-    texChess.specular     = textureChess.getTexture();
-    texChess.emissive     = textureNoEmissive.getTexture();
-    texChess.normal       = 0;  
-    texChess.shininess    = 10.0;
 
     texCube.diffuse       = textureCubeDiffuse.getTexture();
     texCube.specular      = textureCubeSpecular.getTexture();
     texCube.emissive      = textureEmissive.getTexture();
     texCube.normal        = 0;  
     texCube.shininess     = 10.0;
-
-    texWindow.diffuse     = textureWindow.getTexture();
-    texWindow.specular    = textureWindow.getTexture();
-    texWindow.emissive    = textureWindow.getTexture();
-    texWindow.normal      = 0;  
-    texWindow.shininess   = 10.0;
     
-    texPlane.diffuse      = textureWallDiffuse.getTexture();  
-    texPlane.specular     = textureWallSpecular.getTexture();  
-    texPlane.emissive     = textureNoEmissive.getTexture();
-    texPlane.normal       = textureWallNormal.getTexture();
-    texPlane.shininess    = 51.2;
+    texPlano.diffuse      = textureWallDiffuse.getTexture();  
+    texPlano.specular     = textureWallSpecular.getTexture();  
+    texPlano.emissive     = textureNoEmissive.getTexture();
+    texPlano.normal       = textureWallNormal.getTexture();
+    texPlano.shininess    = 51.2;
     
 }
 
@@ -298,13 +245,7 @@ void funDisplay() {
     setLights(P,V);
     
  // Dibujamos la escena
-    glm::mat4 S = glm::scale    (I, glm::vec3(4.0f, 1.0f, 4.0f));
-    glm::mat4 T = glm::translate(I, glm::vec3(0.0f,-3.0f, 0.0f));
-    drawObjectTex(modelPlane,texPlane,P,V,T*S);
-    glm::mat4 Ry = glm::rotate   (I, glm::radians(rotY), glm::vec3(0.0, 1.0, 0.0));
-    glm::mat4 Rx = glm::rotate   (I, glm::radians(rotX), glm::vec3(1.0, 0.0, 0.0));
-    glm::mat4 Tz = glm::translate(I, glm::vec3(0.0, 0.0, desZ));
-    drawObjectTex(modelCube,texCube,P,V,Tz*Rx*Ry);
+    drawSuelo(P, V, I);
     
  // Intercambiamos los buffers
     glutSwapBuffers();
@@ -320,12 +261,12 @@ void setLights(glm::mat4 P, glm::mat4 V) {
     
     for(int i=0; i<NLP; i++) {
         glm::mat4 M = glm::scale(glm::translate(I,lightP[i].position),glm::vec3(0.1));
-        drawObjectMat(modelSphere,matLuces,P,V,M);
+        drawObjectMat(modelEsfera,matLuces,P,V,M);
     }
 
     for(int i=0; i<NLF; i++) {
         glm::mat4 M = glm::scale(glm::translate(I,lightF[i].position),glm::vec3(0.025));
-        drawObjectMat(modelSphere,matLuces,P,V,M);
+        drawObjectMat(modelEsfera,matLuces,P,V,M);
     }
     
 }
@@ -352,6 +293,20 @@ void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm
     shaders.setTextures("utextures",textures);
     model.renderModel(GL_FILL);
     
+}
+
+void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    float rotPlane = 180;
+
+    /* Configuración del suelo */
+    glm::mat4 SPlane = glm::scale(I, glm::vec3(X_PLANE, 1.0, Z_PLANE));
+    glm::mat4 TPlane = glm::translate(I, glm::vec3(0.0, 0.0, 0.0));
+    glm::mat4 RSecond_Plane = glm::rotate(I, glm::radians(rotPlane), glm::vec3(0.0, 0.0, 1.0));
+
+    /* Dibuja el suelo */
+    drawObjectTex(modelPlano, texPlano, P, V, M * SPlane * TPlane);
+    drawObjectTex(modelPlano, texPlano, P, V, M * SPlane * TPlane * RSecond_Plane);
 }
 
 void funSpecial(int key, int x, int y) {
