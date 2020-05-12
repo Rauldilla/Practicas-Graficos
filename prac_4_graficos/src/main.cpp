@@ -20,6 +20,7 @@ std::string toString(const int &i) {
 #define I glm::mat4(1.0)
 #define X_PLANE 3.0
 #define Z_PLANE 3.0
+#define BASE_SIZE 0.75
 
 void funInit();
 void funReshape(int w, int h);
@@ -80,7 +81,7 @@ Light lightG;
 Light lightD[NLD];
 Light lightP[NLP];
 Light lightF[NLF];
-Material matSilver;
+Material matCyanPlastic;
 Textures texCube;
 Textures texWindow;
 Textures texPlano;
@@ -199,12 +200,12 @@ void funInit() {
     lightF[1].c2 = 0.032;
 
     // Materiales
-    matSilver.ambient = glm::vec4(0.19225f, 0.19225f, 0.19225f, 0.5);
-    matSilver.diffuse = glm::vec4(0.50754f, 0.50754f, 0.50754f, 0.5);
-    matSilver.specular = glm::vec4(0.508273f, 0.508273f, 0.508273f, 0.5);
-    matSilver.emissive = glm::vec4(0.000000, 0.000000, 0.000000, 0.5);
-    matSilver.shininess = 51.2f;
-    
+    matCyanPlastic.ambient = glm::vec4(0.0f,0.1f,0.06f ,1.0f);
+    matCyanPlastic.diffuse = glm::vec4(0.0f,0.50980392f,0.50980392f,1.0f);
+    matCyanPlastic.specular = glm::vec4(0.50196078f,0.50196078f,0.50196078f,1.0f);
+    matCyanPlastic.emissive = glm::vec4(0.0, 0.0, 0.0, 0.0);
+    matCyanPlastic.shininess = 32.0f;
+            
     texCube.diffuse = textureCubeDiffuse.getTexture();
     texCube.specular = textureCubeSpecular.getTexture();
     texCube.emissive = textureEmissive.getTexture();
@@ -271,6 +272,8 @@ void funDisplay() {
     setLights(P, V);
     
     // Dibujar escena
+    // TODO Ojo matrices comunes gancho y ventanas
+    //glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
     drawGancho(P, V, I);
     
     drawVentana(P, V, I);
@@ -347,7 +350,14 @@ void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 }
 
 void drawBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    // TODO Intentar hacer un TBase en vez de dos
     
+    glm::mat4 SBase = glm::scale(I, glm::vec3(BASE_SIZE, 0.1, BASE_SIZE));
+    glm::mat4 TBase = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
+    // TODO Mirar textura predominante (1.01 a 1.0)
+    glm::mat4 TBase2 = glm::translate(I, glm::vec3(0.0, -1.01, 0.0));
+    
+    drawObjectMat(modelCubo, matCyanPlastic, P, V, M * TBase * SBase * TBase2);
 } 
 
 void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
