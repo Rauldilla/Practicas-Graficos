@@ -10,6 +10,7 @@
 #include "Model.h"
 
 #include <sstream>
+
 std::string toString(const int &i) {
     std::stringstream ss;
     ss << i;
@@ -35,106 +36,106 @@ void setLights(glm::mat4 P, glm::mat4 V);
 void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 
 // Shaders
-   Shaders shaders;
-   
+Shaders shaders;
+
 // Modelos
-   Model modelPlano;
-   Model modelEsfera;
-   Model modelCubo;
-   
+Model modelPlano;
+Model modelEsfera;
+Model modelCubo;
+
 // Texturas
-   Texture textureEmissive;
-   Texture textureNoEmissive;
-   Texture textureCubeDiffuse;
-   Texture textureCubeSpecular;
-   Texture textureWallDiffuse;
-   Texture textureWallSpecular;
-   Texture textureWallNormal;
-    
+Texture textureEmissive;
+Texture textureNoEmissive;
+Texture textureCubeDiffuse;
+Texture textureCubeSpecular;
+Texture textureWallDiffuse;
+Texture textureWallSpecular;
+Texture textureWallNormal;
+
 // Viewport
-   int w = 600;
-   int h = 600;
-   
+int w = 600;
+int h = 600;
+
 // Animaciones
-   float fovy   = 60.0;
-   float rotX   =  0.0;
-   float rotY   =  0.0;
-   float desZ   =  0.0;
-   float alphaX =  0.0;
-   float alphaY =  -0.174533;
-   
+float fovy = 60.0;
+float rotX = 0.0;
+float rotY = 0.0;
+float desZ = 0.0;
+float alphaX = 0.0;
+float alphaY = -0.174533;
+
 // Luces y materiales
-   #define   NLD 1
-   #define   NLP 1
-   #define   NLF 2
-   Light     lightG;
-   Light     lightD[NLD];
-   Light     lightP[NLP];
-   Light     lightF[NLF];
-   Material  matLuces;
-   Textures  texCube;
-   Textures  texWindow;
-   Textures  texPlano;
-   
+#define   NLD 1
+#define   NLP 1
+#define   NLF 2
+Light lightG;
+Light lightD[NLD];
+Light lightP[NLP];
+Light lightF[NLF];
+Material matLuces;
+Textures texCube;
+Textures texWindow;
+Textures texPlano;
+
 int main(int argc, char** argv) {
 
- // Inicializamos GLUT
+    // Inicializamos GLUT
     glutInit(&argc, argv);
-    glutInitContextVersion(3,3);   
-    glutInitContextFlags(GLUT_FORWARD_COMPATIBLE); 
-    glutInitContextProfile(GLUT_CORE_PROFILE); 
+    glutInitContextVersion(3, 3);
+    glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
+    glutInitContextProfile(GLUT_CORE_PROFILE);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutInitWindowSize(w,h);
-    glutInitWindowPosition(50,50);
+    glutInitWindowSize(w, h);
+    glutInitWindowPosition(50, 50);
     glutCreateWindow("Sesion 7");
-    
- // Inicializamos GLEW
+
+    // Inicializamos GLEW
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
-    if(GLEW_OK != err) {
+    if (GLEW_OK != err) {
         std::cout << "Error: " << glewGetErrorString(err) << std::endl;
         return false;
     }
     std::cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
     const GLubyte *oglVersion = glGetString(GL_VERSION);
-    std::cout <<"This system supports OpenGL Version: " << oglVersion << std::endl;
-    
- // Inicializaciones específicas
+    std::cout << "This system supports OpenGL Version: " << oglVersion << std::endl;
+
+    // Inicializaciones específicas
     funInit();
-    
- // Configuración CallBacks
+
+    // Configuración CallBacks
     glutReshapeFunc(funReshape);
     glutDisplayFunc(funDisplay);
     glutSpecialFunc(funSpecial);
     glutKeyboardFunc(funKeyboard);
     glutMouseFunc(funMouse);
     glutMotionFunc(funMotion);
-    
- // Bucle principal
+
+    // Bucle principal
     glutMainLoop();
-    
+
     return 0;
 }
 
 void funInit() {
-      
- // Test de profundidad
+
+    // Test de profundidad
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    
- // Transparencias
+
+    // Transparencias
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-    
- // Shaders
-    shaders.initShaders("resources/shaders/vshader.glsl","resources/shaders/fshader.glsl");
-    
- // Modelos
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Shaders
+    shaders.initShaders("resources/shaders/vshader.glsl", "resources/shaders/fshader.glsl");
+
+    // Modelos
     modelPlano.initModel("resources/models/plane.obj");
     modelEsfera.initModel("resources/models/sphere.obj");
     modelCubo.initModel("resources/models/cube.obj");
-    
- // Texturas
+
+    // Texturas
     textureEmissive.initTexture("resources/textures/imgEmissive.png");
     textureNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
     textureCubeDiffuse.initTexture("resources/textures/imgCubeDiffuse.png");
@@ -142,157 +143,157 @@ void funInit() {
     textureWallDiffuse.initTexture("resources/textures/imgWallDiffuse.png");
     textureWallSpecular.initTexture("resources/textures/imgWallSpecular.png");
     textureWallNormal.initTexture("resources/textures/imgWallNormal.png");
-    
- // Luz ambiental global
-    lightG.ambient        = glm::vec3(0.9, 0.9, 0.9);
-     
- // Luces direccionales
-    lightD[0].direction   = glm::vec3(-1.0, 0.0, 0.0);
-    lightD[0].ambient     = glm::vec3( 0.1, 0.1, 0.1);
-    lightD[0].diffuse     = glm::vec3( 0.7, 0.7, 0.7);
-    lightD[0].specular    = glm::vec3( 0.7, 0.7, 0.7);
-    
- // Luces posicionales
-    lightP[0].position    = glm::vec3(0.0, 3.0, 3.0);
-    lightP[0].ambient     = glm::vec3(0.2, 0.2, 0.2);
-    lightP[0].diffuse     = glm::vec3(0.9, 0.9, 0.9);
-    lightP[0].specular    = glm::vec3(0.9, 0.9, 0.9);
-    lightP[0].c0          = 1.00;
-    lightP[0].c1          = 0.22;
-    lightP[0].c2          = 0.20;    
-    
- // Luces focales
-    lightF[0].position    = glm::vec3(-2.0,  2.0,  5.0);
-    lightF[0].direction   = glm::vec3( 2.0, -2.0, -5.0);
-    lightF[0].ambient     = glm::vec3( 0.2,  0.2,  0.2);
-    lightF[0].diffuse     = glm::vec3( 0.9,  0.9,  0.9);
-    lightF[0].specular    = glm::vec3( 0.9,  0.9,  0.9);
+
+    // Luz ambiental global
+    lightG.ambient = glm::vec3(0.9, 0.9, 0.9);
+
+    // Luces direccionales
+    lightD[0].direction = glm::vec3(-1.0, 0.0, 0.0);
+    lightD[0].ambient = glm::vec3(0.1, 0.1, 0.1);
+    lightD[0].diffuse = glm::vec3(0.7, 0.7, 0.7);
+    lightD[0].specular = glm::vec3(0.7, 0.7, 0.7);
+
+    // Luces posicionales
+    lightP[0].position = glm::vec3(0.0, 3.0, 3.0);
+    lightP[0].ambient = glm::vec3(0.2, 0.2, 0.2);
+    lightP[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
+    lightP[0].specular = glm::vec3(0.9, 0.9, 0.9);
+    lightP[0].c0 = 1.00;
+    lightP[0].c1 = 0.22;
+    lightP[0].c2 = 0.20;
+
+    // Luces focales
+    lightF[0].position = glm::vec3(-2.0, 2.0, 5.0);
+    lightF[0].direction = glm::vec3(2.0, -2.0, -5.0);
+    lightF[0].ambient = glm::vec3(0.2, 0.2, 0.2);
+    lightF[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
+    lightF[0].specular = glm::vec3(0.9, 0.9, 0.9);
     lightF[0].innerCutOff = 10.0;
     lightF[0].outerCutOff = lightF[0].innerCutOff + 5.0;
-    lightF[0].c0          = 1.000;
-    lightF[0].c1          = 0.090;
-    lightF[0].c2          = 0.032;
-    
-    lightF[1].position    = glm::vec3( 2.0,  2.0,  5.0);
-    lightF[1].direction   = glm::vec3(-2.0, -2.0, -5.0);
-    lightF[1].ambient     = glm::vec3( 0.2,  0.2,  0.2);
-    lightF[1].diffuse     = glm::vec3( 0.9,  0.9,  0.9);
-    lightF[1].specular    = glm::vec3( 0.9,  0.9,  0.9);
+    lightF[0].c0 = 1.000;
+    lightF[0].c1 = 0.090;
+    lightF[0].c2 = 0.032;
+
+    lightF[1].position = glm::vec3(2.0, 2.0, 5.0);
+    lightF[1].direction = glm::vec3(-2.0, -2.0, -5.0);
+    lightF[1].ambient = glm::vec3(0.2, 0.2, 0.2);
+    lightF[1].diffuse = glm::vec3(0.9, 0.9, 0.9);
+    lightF[1].specular = glm::vec3(0.9, 0.9, 0.9);
     lightF[1].innerCutOff = 5.0;
     lightF[1].outerCutOff = lightF[1].innerCutOff + 1.0;
-    lightF[1].c0          = 1.000;
-    lightF[1].c1          = 0.090;
-    lightF[1].c2          = 0.032;
-    
- // Materiales
-    matLuces.ambient      = glm::vec4(0.0, 0.0, 0.0, 1.0);
-    matLuces.diffuse      = glm::vec4(0.0, 0.0, 0.0, 1.0);
-    matLuces.specular     = glm::vec4(0.0, 0.0, 0.0, 1.0);
-    matLuces.emissive     = glm::vec4(1.0, 1.0, 1.0, 1.0);
-    matLuces.shininess    = 1.0;
+    lightF[1].c0 = 1.000;
+    lightF[1].c1 = 0.090;
+    lightF[1].c2 = 0.032;
 
-    texCube.diffuse       = textureCubeDiffuse.getTexture();
-    texCube.specular      = textureCubeSpecular.getTexture();
-    texCube.emissive      = textureEmissive.getTexture();
-    texCube.normal        = 0;  
-    texCube.shininess     = 10.0;
-    
-    texPlano.diffuse      = textureWallDiffuse.getTexture();  
-    texPlano.specular     = textureWallSpecular.getTexture();  
-    texPlano.emissive     = textureNoEmissive.getTexture();
-    texPlano.normal       = textureWallNormal.getTexture();
-    texPlano.shininess    = 51.2;
-    
+    // Materiales
+    matLuces.ambient = glm::vec4(0.0, 0.0, 0.0, 1.0);
+    matLuces.diffuse = glm::vec4(0.0, 0.0, 0.0, 1.0);
+    matLuces.specular = glm::vec4(0.0, 0.0, 0.0, 1.0);
+    matLuces.emissive = glm::vec4(1.0, 1.0, 1.0, 1.0);
+    matLuces.shininess = 1.0;
+
+    texCube.diffuse = textureCubeDiffuse.getTexture();
+    texCube.specular = textureCubeSpecular.getTexture();
+    texCube.emissive = textureEmissive.getTexture();
+    texCube.normal = 0;
+    texCube.shininess = 10.0;
+
+    texPlano.diffuse = textureWallDiffuse.getTexture();
+    texPlano.specular = textureWallSpecular.getTexture();
+    texPlano.emissive = textureNoEmissive.getTexture();
+    texPlano.normal = textureWallNormal.getTexture();
+    texPlano.shininess = 51.2;
+
 }
 
 void funReshape(int wnew, int hnew) {
-    
- // Configuración del Viewport
+
+    // Configuración del Viewport
     glViewport(0, 0, wnew, hnew);
 
- // Captura de w y h
+    // Captura de w y h
     w = wnew;
     h = hnew;
-    
+
 }
 
 void funDisplay() {
-    
- // Borramos el buffer de color
+
+    // Borramos el buffer de color
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
- // Indicamos los shaders a utilizar
-    shaders.useShaders();
-    
- // Matriz de Proyección P (Perspectiva)
-    float nplane =  0.1;
-    float fplane = 25.0;
-    float aspect = (float)w/(float)h;
-    glm::mat4 P  = glm::perspective(glm::radians(fovy), aspect, nplane, fplane); 
 
- // Matriz de Vista V (Cámara)
-    float x = 10.0*glm::cos(alphaY)*glm::sin(alphaX);
-    float y = 10.0*glm::sin(alphaY);
-    float z = 10.0*glm::cos(alphaY)*glm::cos(alphaX);
-    glm::vec3 pos   (x  , y  , z  );
+    // Indicamos los shaders a utilizar
+    shaders.useShaders();
+
+    // Matriz de Proyección P (Perspectiva)
+    float nplane = 0.1;
+    float fplane = 25.0;
+    float aspect = (float) w / (float) h;
+    glm::mat4 P = glm::perspective(glm::radians(fovy), aspect, nplane, fplane);
+
+    // Matriz de Vista V (Cámara)
+    float x = 10.0 * glm::cos(alphaY) * glm::sin(alphaX);
+    float y = 10.0 * glm::sin(alphaY);
+    float z = 10.0 * glm::cos(alphaY) * glm::cos(alphaX);
+    glm::vec3 pos(x, y, z);
     glm::vec3 lookat(0.0, 0.0, 0.0);
-    glm::vec3 up    (0.0, 1.0, 0.0);
-    glm::mat4 V = glm::lookAt(pos, lookat, up);   
-    shaders.setVec3 ("ucpos",pos);
-    
- // Fijamos las luces
-    setLights(P,V);
-    
- // Dibujamos la escena
+    glm::vec3 up(0.0, 1.0, 0.0);
+    glm::mat4 V = glm::lookAt(pos, lookat, up);
+    shaders.setVec3("ucpos", pos);
+
+    // Fijamos las luces
+    setLights(P, V);
+
+    // Dibujamos la escena
     drawSuelo(P, V, I);
-    
- // Intercambiamos los buffers
+
+    // Intercambiamos los buffers
     glutSwapBuffers();
-    
+
 }
 
 void setLights(glm::mat4 P, glm::mat4 V) {
-    
-    shaders.setLight("ulightG",lightG);
-    for(int i=0; i<NLD; i++) shaders.setLight("ulightD["+toString(i)+"]",lightD[i]);
-    for(int i=0; i<NLP; i++) shaders.setLight("ulightP["+toString(i)+"]",lightP[i]);
-    for(int i=0; i<NLF; i++) shaders.setLight("ulightF["+toString(i)+"]",lightF[i]);
-    
-    for(int i=0; i<NLP; i++) {
-        glm::mat4 M = glm::scale(glm::translate(I,lightP[i].position),glm::vec3(0.1));
-        drawObjectMat(modelEsfera,matLuces,P,V,M);
+
+    shaders.setLight("ulightG", lightG);
+    for (int i = 0; i < NLD; i++) shaders.setLight("ulightD[" + toString(i) + "]", lightD[i]);
+    for (int i = 0; i < NLP; i++) shaders.setLight("ulightP[" + toString(i) + "]", lightP[i]);
+    for (int i = 0; i < NLF; i++) shaders.setLight("ulightF[" + toString(i) + "]", lightF[i]);
+
+    for (int i = 0; i < NLP; i++) {
+        glm::mat4 M = glm::scale(glm::translate(I, lightP[i].position), glm::vec3(0.1));
+        drawObjectMat(modelEsfera, matLuces, P, V, M);
     }
 
-    for(int i=0; i<NLF; i++) {
-        glm::mat4 M = glm::scale(glm::translate(I,lightF[i].position),glm::vec3(0.025));
-        drawObjectMat(modelEsfera,matLuces,P,V,M);
+    for (int i = 0; i < NLF; i++) {
+        glm::mat4 M = glm::scale(glm::translate(I, lightF[i].position), glm::vec3(0.025));
+        drawObjectMat(modelEsfera, matLuces, P, V, M);
     }
-    
+
 }
 
 void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
- 
-    shaders.setMat4("uN"  ,glm::transpose(glm::inverse(M)));
-    shaders.setMat4("uM"  ,M);
-    shaders.setMat4("uPVM",P*V*M);
-    shaders.setBool("uWithMaterials",true);
-    shaders.setMaterial("umaterial",material);
+
+    shaders.setMat4("uN", glm::transpose(glm::inverse(M)));
+    shaders.setMat4("uM", M);
+    shaders.setMat4("uPVM", P * V * M);
+    shaders.setBool("uWithMaterials", true);
+    shaders.setMaterial("umaterial", material);
     model.renderModel(GL_FILL);
-    
+
 }
 
 void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
- 
-    shaders.setMat4("uN"  ,glm::transpose(glm::inverse(M)));
-    shaders.setMat4("uM"  ,M);
-    shaders.setMat4("uPVM",P*V*M);
-    shaders.setBool("uWithMaterials",false);
-    if(textures.normal!=0) shaders.setBool("uWithNormals",true);
-    else                   shaders.setBool("uWithNormals",false);
-    shaders.setTextures("utextures",textures);
+
+    shaders.setMat4("uN", glm::transpose(glm::inverse(M)));
+    shaders.setMat4("uM", M);
+    shaders.setMat4("uPVM", P * V * M);
+    shaders.setBool("uWithMaterials", false);
+    if (textures.normal != 0) shaders.setBool("uWithNormals", true);
+    else shaders.setBool("uWithNormals", false);
+    shaders.setTextures("utextures", textures);
     model.renderModel(GL_FILL);
-    
+
 }
 
 void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -311,50 +312,59 @@ void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void funSpecial(int key, int x, int y) {
 
-    switch(key) {
-       case GLUT_KEY_UP:    rotX -= 5.0f;   break;
-       case GLUT_KEY_DOWN:  rotX += 5.0f;   break;
-       case GLUT_KEY_LEFT:  rotY -= 5.0f;   break;
-       case GLUT_KEY_RIGHT: rotY += 5.0f;   break;
-       default:                             
-           rotX = 0.0f;
-           rotY = 0.0f;
-           break;
-    }    
+    switch (key) {
+        case GLUT_KEY_UP: rotX -= 5.0f;
+            break;
+        case GLUT_KEY_DOWN: rotX += 5.0f;
+            break;
+        case GLUT_KEY_LEFT: rotY -= 5.0f;
+            break;
+        case GLUT_KEY_RIGHT: rotY += 5.0f;
+            break;
+        default:
+            rotX = 0.0f;
+            rotY = 0.0f;
+            break;
+    }
     glutPostRedisplay();
-        
+
 }
 
 void funKeyboard(unsigned char key, int x, int y) {
-   
-    switch(key) {
-        case 'e':   desZ -= 0.1f;  break;
-        case 'd':   desZ += 0.1f;  break;
-        default:    desZ  = 0.0f;  break;
+
+    switch (key) {
+        case 'e': desZ -= 0.1f;
+            break;
+        case 'd': desZ += 0.1f;
+            break;
+        default: desZ = 0.0f;
+            break;
     }
     glutPostRedisplay();
-        
+
 }
 
 void funMouse(int button, int state, int x, int y) {
-    
-    switch(button) {
-        case 3: fovy  -= fovy> 10.0f ? 1.0f : 0.0f; break;
-        case 4: fovy  += fovy<110.0f ? 1.0f : 0.0f; break;
+
+    switch (button) {
+        case 3: fovy -= fovy > 10.0f ? 1.0f: 0.0f;
+            break;
+        case 4: fovy += fovy < 110.0f ? 1.0f: 0.0f;
+            break;
     }
     glutPostRedisplay();
-    
+
 }
 
 void funMotion(int x, int y) {
-      
-    float pi   = glm::pi<float>();
-    float limY = glm::radians( 89.0f);
-    
-    alphaX = pi*((float)x/(float)w - 0.5f);
-    alphaY = pi*(0.5f - (float)y/(float)h);
-    if(alphaY<-limY) alphaY = -limY;      
-    if(alphaY> limY) alphaY =  limY;
+
+    float pi = glm::pi<float>();
+    float limY = glm::radians(89.0f);
+
+    alphaX = pi * ((float) x / (float) w - 0.5f);
+    alphaY = pi * (0.5f - (float) y / (float) h);
+    if (alphaY<-limY) alphaY = -limY;
+    if (alphaY > limY) alphaY = limY;
     glutPostRedisplay();
 
 }
