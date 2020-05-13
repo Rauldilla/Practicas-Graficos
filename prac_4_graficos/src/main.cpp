@@ -25,6 +25,7 @@ std::string toString(const int &i) {
 void funInit();
 void funReshape(int w, int h);
 void funDisplay();
+void funTimer(int ignore);
 void funSpecial(int key, int x, int y);
 void funKeyboard(unsigned char key, int x, int y);
 void funMouse(int button, int state, int x, int y);
@@ -67,11 +68,13 @@ int w = 600;
 int h = 600;
 
 // Animaciones
+GLint speed = 20;
 float fovy = 60.0;
 float rotX = 0.0;
 float rotY = 0.0;
 float extensionSoporteY = 0.0;
 float rotGarra = 70;
+float rotGancho = 0;
 float alphaX = 0.0;
 float alphaY = -0.174533;
 
@@ -119,6 +122,7 @@ int main(int argc, char** argv) {
 
     // Configuración CallBacks
     glutReshapeFunc(funReshape);
+    glutTimerFunc(speed, funTimer, 0);
     glutDisplayFunc(funDisplay);
     glutSpecialFunc(funSpecial);
     glutKeyboardFunc(funKeyboard);
@@ -353,12 +357,15 @@ void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
+    // Para extender el gancho
     glm::mat4 TExtension = glm::translate(I, glm::vec3(0.0, extensionSoporteY, 0.0));
+    // Para la rotación automática del gancho
+    glm::mat4 RGancho = glm::rotate(I, glm::radians(rotGancho), glm::vec3(0.0, 1.0, 0.0));
 
     drawBase(P, V, M);
     drawSoporte(P, V, M);
     drawSoporte(P, V, M * TExtension);
-    drawArticulacion(P, V, M * TExtension);
+    drawArticulacion(P, V, M * RGancho * TExtension);
 
 }
 
@@ -442,6 +449,15 @@ void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
     // TODO drawGarras
+}
+
+void funTimer(int ignore) {
+    
+    rotGancho += 0.5;
+    
+    glutPostRedisplay();
+    glutTimerFunc(speed, funTimer, 0);
+
 }
 
 void funSpecial(int key, int x, int y) {
