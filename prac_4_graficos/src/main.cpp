@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(w, h);
     glutInitWindowPosition(50, 50);
-    glutCreateWindow("Sesion 7");
+    glutCreateWindow("Práctica 4");
 
     // Inicializamos GLEW
     glewExperimental = GL_TRUE;
