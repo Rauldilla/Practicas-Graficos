@@ -75,6 +75,8 @@ float rotY = 0.0;
 float extensionSoporteY = 0.0;
 float rotGarra = 70;
 float rotGancho = 0;
+float movX = 0;
+float movZ = 0;
 float alphaX = 0.0;
 float alphaY = -0.174533;
 
@@ -286,9 +288,11 @@ void funDisplay() {
     setLights(P, V);
 
     // Dibujar escena
+    // Para el movimiento en x e y del gancho
+    glm::mat4 TGancho = glm::translate(I, glm::vec3(movX, 0.0, movZ));
     // TODO Ojo matrices comunes gancho y ventanas
     //glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
-    drawGancho(P, V, I);
+    drawGancho(P, V, I * TGancho);
     drawVentana(P, V, I);
 
     // Intercambiamos los buffers
@@ -463,18 +467,13 @@ void funTimer(int ignore) {
 void funSpecial(int key, int x, int y) {
 
     switch (key) {
-        case GLUT_KEY_UP: rotX -= 5.0f;
+        case GLUT_KEY_UP: if(movZ < 2) movZ += 0.1;
             break;
-        case GLUT_KEY_DOWN: rotX += 5.0f;
+        case GLUT_KEY_DOWN: if(movZ > -2) movZ -= 0.1;
             break;
-        case GLUT_KEY_LEFT: rotY -= 5.0f;
+        case GLUT_KEY_LEFT: if(movX > -2) movX -= 0.1;
             break;
-        case GLUT_KEY_RIGHT: rotY += 5.0f;
-            break;
-        default:
-            rotX = 0.0f;
-            rotY = 0.0f;
-            break;
+        case GLUT_KEY_RIGHT: if(movX < 2) movX += 0.1;
     }
     glutPostRedisplay();
 
