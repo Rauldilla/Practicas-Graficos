@@ -49,6 +49,7 @@ Model modelPlano;
 Model modelEsfera;
 Model modelCubo;
 Model modelCilindro;
+Model modelCono;
 
 // Texturas
 Texture textureEmissive;
@@ -70,6 +71,7 @@ float fovy = 60.0;
 float rotX = 0.0;
 float rotY = 0.0;
 float extensionSoporteY = 0.0;
+float rotGarra = 70;
 float alphaX = 0.0;
 float alphaY = -0.174533;
 
@@ -147,6 +149,7 @@ void funInit() {
     modelEsfera.initModel("resources/models/sphere.obj");
     modelCubo.initModel("resources/models/cube.obj");
     modelCilindro.initModel("resources/models/cylinder.obj");
+    modelCono.initModel("resources/models/cone.obj");
 
     // Texturas
     textureEmissive.initTexture("resources/textures/imgEmissive.png");
@@ -201,18 +204,18 @@ void funInit() {
     lightF[1].c2 = 0.032;
 
     // Materiales
-    matCyanPlastic.ambient = glm::vec4(0.0f,0.1f,0.06f ,1.0f);
-    matCyanPlastic.diffuse = glm::vec4(0.0f,0.50980392f,0.50980392f,1.0f);
-    matCyanPlastic.specular = glm::vec4(0.50196078f,0.50196078f,0.50196078f,1.0f);
+    matCyanPlastic.ambient = glm::vec4(0.0f, 0.1f, 0.06f, 1.0f);
+    matCyanPlastic.diffuse = glm::vec4(0.0f, 0.50980392f, 0.50980392f, 1.0f);
+    matCyanPlastic.specular = glm::vec4(0.50196078f, 0.50196078f, 0.50196078f, 1.0f);
     matCyanPlastic.emissive = glm::vec4(0.0, 0.0, 0.0, 0.0);
     matCyanPlastic.shininess = 32.0f;
-    
+
     matCopper.ambient = glm::vec4(0.19125f, 0.0735f, 0.0225f, 1.0f);
     matCopper.diffuse = glm::vec4(0.7038f, 0.27048f, 0.0828f, 1.0f);
     matCopper.specular = glm::vec4(0.256777f, 0.137622f, 0.086014f, 1.0f);
     matCopper.emissive = glm::vec4(0.0, 0.0, 0.0, 1.0);
     matCopper.shininess = 12.8f;
-            
+
     texCube.diffuse = textureCubeDiffuse.getTexture();
     texCube.specular = textureCubeSpecular.getTexture();
     texCube.emissive = textureEmissive.getTexture();
@@ -224,13 +227,13 @@ void funInit() {
     texPlano.emissive = textureNoEmissive.getTexture();
     texPlano.normal = textureWallNormal.getTexture();
     texPlano.shininess = 51.2;
-    
+
     texLuz.diffuse = textureLights.getTexture();
     texLuz.specular = textureLights.getTexture();
     texLuz.emissive = textureNoEmissive.getTexture();
     texLuz.normal = 0;
     texLuz.shininess = 10.0;
-    
+
     texCristal.diffuse = textureGlass.getTexture();
     texCristal.specular = textureGlass.getTexture();
     texCristal.emissive = textureNoEmissive.getTexture();
@@ -277,12 +280,11 @@ void funDisplay() {
 
     // Fijamos las luces
     setLights(P, V);
-    
+
     // Dibujar escena
     // TODO Ojo matrices comunes gancho y ventanas
     //glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
     drawGancho(P, V, I);
-    
     drawVentana(P, V, I);
 
     // Intercambiamos los buffers
@@ -350,24 +352,24 @@ void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 }
 
 void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-    
+
     glm::mat4 TExtension = glm::translate(I, glm::vec3(0.0, extensionSoporteY, 0.0));
-    
+
     drawBase(P, V, M);
     drawSoporte(P, V, M);
     drawSoporte(P, V, M * TExtension);
     drawArticulacion(P, V, M * TExtension);
-    drawGarras(P, V, M * TExtension);
+
 }
 
 void drawBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     // TODO Intentar hacer un TBase en vez de dos
-    
+
     glm::mat4 SBase = glm::scale(I, glm::vec3(BASE_SIZE, 0.1, BASE_SIZE));
     glm::mat4 TBase = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
     // TODO Mirar textura predominante (1.01 a 1.0)
     glm::mat4 TBase_Colocacion = glm::translate(I, glm::vec3(0.0, -1.01, 0.0));
-    
+
     drawObjectMat(modelCubo, matCyanPlastic, P, V, M * TBase * SBase * TBase_Colocacion);
 }
 
@@ -375,19 +377,71 @@ void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 SSoporte = glm::scale(I, glm::vec3(0.15, 0.5, 0.15));
     glm::mat4 TSoporte = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
     glm::mat4 TSoporte_Colocacion = glm::translate(I, glm::vec3(0.0, -1.01, 0.0));
-    
+
     drawObjectMat(modelCilindro, matCopper, P, V, M * TSoporte * SSoporte * TSoporte_Colocacion);
 }
 
+// TODO Cambiar nombre que englobe articulaciones y garras
+// TODO refactor del duro
 void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    // Articulación
     glm::mat4 SArticulacion = glm::scale(I, glm::vec3(0.15, 0.15, 0.15));
-    glm::mat4 TArticulacion = glm::translate(I, glm::vec3(0.0, 10, 0.0));
+    glm::mat4 TArticulacion = glm::translate(I, glm::vec3(0.0, 1.25, 0.0));
+
+    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * TArticulacion * SArticulacion);
+
+    // Garras
+    float colocacionGarra = 90;
+    glm::mat4 R90 = glm::rotate(I, glm::radians(colocacionGarra), glm::vec3(0.0, 1.0, 0.0));
+
+    glm::mat4 TGarra = glm::translate(I, glm::vec3(0.0, -1.0, -0.5));
+    glm::mat4 RGarra = glm::rotate(I, glm::radians(rotGarra), glm::vec3(1.0, 0.0, 0.0));
+    glm::mat4 SGarra = glm::scale(I, glm::vec3(0.1, 0.4, 0.1));
+
+    drawObjectMat(modelCubo, matCopper, P, V, M * TArticulacion * RGarra * SGarra * TGarra);
+    drawObjectMat(modelCubo, matCopper, P, V, M * R90 * TArticulacion * RGarra * SGarra * TGarra);
+    drawObjectMat(modelCubo, matCopper, P, V, M * R90 * R90 * TArticulacion * RGarra * SGarra * TGarra);
+    drawObjectMat(modelCubo, matCopper, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra * SGarra * TGarra);
+
+    // Articulacion de garras
+    glm::mat4 SArticulacionGarra = glm::scale(I, glm::vec3(0.1, 0.1, 0.1));
+    glm::mat4 TArticulacionGarra = glm::translate(I, glm::vec3(0.0, -0.8, -0.0));
+
+    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * TArticulacion * RGarra
+            * TArticulacionGarra * SArticulacionGarra * TGarra);
     
-    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * SArticulacion * TArticulacion);
+    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * R90 * TArticulacion * RGarra
+            * TArticulacionGarra * SArticulacionGarra * TGarra);
+    
+    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * R90 * R90 * TArticulacion * RGarra
+            * TArticulacionGarra * SArticulacionGarra * TGarra);
+    
+    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra
+            * TArticulacionGarra * SArticulacionGarra * TGarra);
+    
+    // Pinchos
+    float rotPincho = 90;
+    
+    glm::mat4 TPincho = glm::translate(I, glm::vec3(0.0, -0.1, 0.15));
+    glm::mat4 RPincho = glm::rotate(I, glm::radians(rotPincho), glm::vec3(1.0, 0.0, 0.0));
+    glm::mat4 SPincho = glm::scale(I, glm::vec3(0.0722, 0.0722, 0.0722));
+    
+    drawObjectMat(modelCono, matCyanPlastic, P, V, M * TArticulacion * RGarra
+            * TArticulacionGarra * TPincho * RPincho * SPincho);
+    
+    drawObjectMat(modelCono, matCyanPlastic, P, V, M * R90 * TArticulacion * RGarra
+            * TArticulacionGarra * TPincho * RPincho * SPincho);
+    
+    drawObjectMat(modelCono, matCyanPlastic, P, V, M * R90 * R90 * TArticulacion * RGarra
+            * TArticulacionGarra * TPincho * RPincho * SPincho);
+    
+    drawObjectMat(modelCono, matCyanPlastic, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra
+            * TArticulacionGarra * TPincho * RPincho * SPincho);
 }
 
-void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M){
+void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
+    // TODO drawGarras
 }
 
 void funSpecial(int key, int x, int y) {
@@ -413,14 +467,24 @@ void funSpecial(int key, int x, int y) {
 void funKeyboard(unsigned char key, int x, int y) {
 
     switch (key) {
-        case 's': 
+        case 's':
             if (extensionSoporteY >= -1.0) {
                 extensionSoporteY -= 0.1f;
             }
             break;
-        case 'S': 
+        case 'S':
             if (extensionSoporteY < -0.1) {
                 extensionSoporteY += 0.1f;
+            }
+            break;
+        case 'r':
+            if(rotGarra > 30) {
+                rotGarra -= 0.5;
+            }
+            break;
+        case 'R':
+            if(rotGarra <= 70) {
+                rotGarra += 0.5;
             }
             break;
         default: extensionSoporteY = 0.0f;
