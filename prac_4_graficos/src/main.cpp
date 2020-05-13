@@ -380,7 +380,10 @@ void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 }
 
 void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    glm::mat4 SArticulacion = glm::scale(I, glm::vec3(0.15, 0.15, 0.15));
+    glm::mat4 TArticulacion = glm::translate(I, glm::vec3(0.0, 10, 0.0));
     
+    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * SArticulacion * TArticulacion);
 }
 
 void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M){
