@@ -35,6 +35,7 @@ void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm
 void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void setLights(glm::mat4 P, glm::mat4 V);
 
+void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawBase(glm::mat4 P, glm::mat4 V, glm::mat4 M);
@@ -292,8 +293,13 @@ void funDisplay() {
     glm::mat4 TGancho = glm::translate(I, glm::vec3(movX, 0.0, movZ));
     // TODO Ojo matrices comunes gancho y ventanas
     //glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
-    drawGancho(P, V, I * TGancho);
-    drawVentana(P, V, I);
+    drawSuelo(P, V, I);
+    
+    // Colocación de gancho y ventana para que no atraviese el suelo
+    glm::mat4 TWindow = glm::translate(I, glm::vec3(0.0, 0.72, 0.0));
+    
+    drawGancho(P, V, I * TGancho * TWindow);
+    drawVentana(P, V, I * TWindow);
 
     // Intercambiamos los buffers
     glutSwapBuffers();
@@ -343,10 +349,25 @@ void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm
 
 }
 
+void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+
+    float rotPlane = 180;
+
+    /* Configuración del suelo */
+    glm::mat4 SSuelo = glm::scale(I, glm::vec3(X_PLANE, 1.0, Z_PLANE));
+    glm::mat4 TSuelo = glm::translate(I, glm::vec3(0.0, 0.0, 0.0));
+    glm::mat4 RSecondSuelo = glm::rotate(I, glm::radians(rotPlane), glm::vec3(0.0, 0.0, 1.0));
+
+    /* Dibuja el suelo */
+    drawObjectMat(modelPlano, matCopper, P, V, M * SSuelo * TSuelo);
+    drawObjectMat(modelPlano, matCopper, P, V, M * SSuelo * TSuelo * RSecondSuelo);
+}
+
 void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     float rotPlane = 180;
 
+    // TODO cambiar cosas de estas (se llama ventana, no suelo)
     /* Configuración del suelo */
     glm::mat4 SWindow = glm::scale(I, glm::vec3(X_PLANE, 1.0, Z_PLANE));
     glm::mat4 TWindow = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
