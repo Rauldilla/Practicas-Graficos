@@ -59,6 +59,7 @@ Texture textureNoEmissive;
 Texture textureLights;
 Texture textureGlass;
 Texture textureIron;
+Texture textureToyStory;
 
 // Viewport
 int w = 600;
@@ -86,9 +87,12 @@ Light lightD[NLD];
 Light lightP[NLP];
 Light lightF[NLF];
 Material matCyanPlastic;
-Material matCopper;
+Material matBrass;
+Material matRedRubber;
 Textures texLuz;
 Textures texCristal;
+Textures texIron;
+Textures texToyStory;
 
 int main(int argc, char** argv) {
 
@@ -156,6 +160,8 @@ void funInit() {
     textureNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
     textureLights.initTexture("resources/textures/imgLuces.png");
     textureGlass.initTexture("resources/textures/imgGlass.png");
+    textureIron.initTexture("resources/textures/imgIron.png");
+    textureToyStory.initTexture("resources/textures/imgToyStory.png");
 
     // Luz ambiental global
     lightG.ambient = glm::vec3(0.9, 0.9, 0.9);
@@ -205,11 +211,17 @@ void funInit() {
     matCyanPlastic.emissive = glm::vec4(0.0, 0.0, 0.0, 0.0);
     matCyanPlastic.shininess = 32.0f;
 
-    matCopper.ambient = glm::vec4(0.19125f, 0.0735f, 0.0225f, 1.0f);
-    matCopper.diffuse = glm::vec4(0.7038f, 0.27048f, 0.0828f, 1.0f);
-    matCopper.specular = glm::vec4(0.256777f, 0.137622f, 0.086014f, 1.0f);
-    matCopper.emissive = glm::vec4(0.0, 0.0, 0.0, 1.0);
-    matCopper.shininess = 12.8f;
+    matBrass.ambient = glm::vec4(0.329412f, 0.223529f, 0.027451f,1.0f);
+    matBrass.diffuse = glm::vec4(0.780392f, 0.568627f, 0.113725f, 1.0f);
+    matBrass.specular = glm::vec4(0.992157f, 0.941176f, 0.807843f, 1.0f);
+    matBrass.emissive = glm::vec4(0.0, 0.0, 0.0, 1.0);
+    matBrass.shininess = 27.8974f;
+    
+    matRedRubber.ambient = glm::vec4(0.05f,0.0f,0.0f,1.0f);
+    matRedRubber.diffuse = glm::vec4(0.5f,0.4f,0.4f,1.0f);
+    matRedRubber.specular = glm::vec4(0.7f,0.04f,0.04f,1.0f);
+    matRedRubber.emissive = glm::vec4(0.0, 0.0, 0.0, 1.0);
+    matRedRubber.shininess = 10.0f;
 
     texLuz.diffuse = textureLights.getTexture();
     texLuz.specular = textureLights.getTexture();
@@ -222,7 +234,18 @@ void funInit() {
     texCristal.emissive = textureNoEmissive.getTexture();
     texCristal.normal = 0;
     texCristal.shininess = 10.0;
-
+    
+    texIron.diffuse = textureIron.getTexture();
+    texIron.specular = textureIron.getTexture();
+    texIron.emissive = textureNoEmissive.getTexture();
+    texIron.normal = 0;
+    texIron.shininess = 10.0;
+    
+    texToyStory.diffuse = textureToyStory.getTexture();
+    texToyStory.specular = textureToyStory.getTexture();
+    texToyStory.emissive = textureNoEmissive.getTexture();
+    texToyStory.normal = 0;
+    texToyStory.shininess = 10.0;
 }
 
 void funReshape(int wnew, int hnew) {
@@ -335,8 +358,8 @@ void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 RSecondSuelo = glm::rotate(I, glm::radians(rotPlane), glm::vec3(0.0, 0.0, 1.0));
 
     /* Dibuja el suelo */
-    drawObjectMat(modelPlano, matCopper, P, V, M * SSuelo * TSuelo);
-    drawObjectMat(modelPlano, matCopper, P, V, M * SSuelo * TSuelo * RSecondSuelo);
+    drawObjectTex(modelPlano, texIron, P, V, M * SSuelo * TSuelo);
+    drawObjectTex(modelPlano, texIron, P, V, M * SSuelo * TSuelo * RSecondSuelo);
 }
 
 void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -386,7 +409,7 @@ void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 TSoporte = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
     glm::mat4 TSoporte_Colocacion = glm::translate(I, glm::vec3(0.0, -1.01, 0.0));
 
-    drawObjectMat(modelCilindro, matCopper, P, V, M * TSoporte * SSoporte * TSoporte_Colocacion);
+    drawObjectMat(modelCilindro, matBrass, P, V, M * TSoporte * SSoporte * TSoporte_Colocacion);
 }
 
 // TODO Cambiar nombre que englobe articulaciones y garras
@@ -396,7 +419,7 @@ void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 SArticulacion = glm::scale(I, glm::vec3(0.15, 0.15, 0.15));
     glm::mat4 TArticulacion = glm::translate(I, glm::vec3(0.0, 1.25, 0.0));
 
-    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * TArticulacion * SArticulacion);
+    drawObjectTex(modelEsfera, texToyStory, P, V, M * TArticulacion * SArticulacion);
 
     // Garras
     float colocacionGarra = 90;
@@ -406,25 +429,25 @@ void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 RGarra = glm::rotate(I, glm::radians(rotGarra), glm::vec3(1.0, 0.0, 0.0));
     glm::mat4 SGarra = glm::scale(I, glm::vec3(0.1, 0.4, 0.1));
 
-    drawObjectMat(modelCubo, matCopper, P, V, M * TArticulacion * RGarra * SGarra * TGarra);
-    drawObjectMat(modelCubo, matCopper, P, V, M * R90 * TArticulacion * RGarra * SGarra * TGarra);
-    drawObjectMat(modelCubo, matCopper, P, V, M * R90 * R90 * TArticulacion * RGarra * SGarra * TGarra);
-    drawObjectMat(modelCubo, matCopper, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra * SGarra * TGarra);
+    drawObjectMat(modelCubo, matBrass, P, V, M * TArticulacion * RGarra * SGarra * TGarra);
+    drawObjectMat(modelCubo, matBrass, P, V, M * R90 * TArticulacion * RGarra * SGarra * TGarra);
+    drawObjectMat(modelCubo, matBrass, P, V, M * R90 * R90 * TArticulacion * RGarra * SGarra * TGarra);
+    drawObjectMat(modelCubo, matBrass, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra * SGarra * TGarra);
 
     // Articulacion de garras
     glm::mat4 SArticulacionGarra = glm::scale(I, glm::vec3(0.1, 0.1, 0.1));
     glm::mat4 TArticulacionGarra = glm::translate(I, glm::vec3(0.0, -0.8, -0.0));
 
-    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * TArticulacion * RGarra
+    drawObjectMat(modelEsfera, matRedRubber, P, V, M * TArticulacion * RGarra
             * TArticulacionGarra * SArticulacionGarra * TGarra);
     
-    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * R90 * TArticulacion * RGarra
+    drawObjectMat(modelEsfera, matRedRubber, P, V, M * R90 * TArticulacion * RGarra
             * TArticulacionGarra * SArticulacionGarra * TGarra);
     
-    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * R90 * R90 * TArticulacion * RGarra
+    drawObjectMat(modelEsfera, matRedRubber, P, V, M * R90 * R90 * TArticulacion * RGarra
             * TArticulacionGarra * SArticulacionGarra * TGarra);
     
-    drawObjectMat(modelEsfera, matCyanPlastic, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra
+    drawObjectMat(modelEsfera, matRedRubber, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra
             * TArticulacionGarra * SArticulacionGarra * TGarra);
     
     // Pinchos
@@ -434,16 +457,16 @@ void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 RPincho = glm::rotate(I, glm::radians(rotPincho), glm::vec3(1.0, 0.0, 0.0));
     glm::mat4 SPincho = glm::scale(I, glm::vec3(0.0722, 0.0722, 0.0722));
     
-    drawObjectMat(modelCono, matCyanPlastic, P, V, M * TArticulacion * RGarra
+    drawObjectMat(modelCono, matRedRubber, P, V, M * TArticulacion * RGarra
             * TArticulacionGarra * TPincho * RPincho * SPincho);
     
-    drawObjectMat(modelCono, matCyanPlastic, P, V, M * R90 * TArticulacion * RGarra
+    drawObjectMat(modelCono, matRedRubber, P, V, M * R90 * TArticulacion * RGarra
             * TArticulacionGarra * TPincho * RPincho * SPincho);
     
-    drawObjectMat(modelCono, matCyanPlastic, P, V, M * R90 * R90 * TArticulacion * RGarra
+    drawObjectMat(modelCono, matRedRubber, P, V, M * R90 * R90 * TArticulacion * RGarra
             * TArticulacionGarra * TPincho * RPincho * SPincho);
     
-    drawObjectMat(modelCono, matCyanPlastic, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra
+    drawObjectMat(modelCono, matRedRubber, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra
             * TArticulacionGarra * TPincho * RPincho * SPincho);
 }
 
@@ -498,8 +521,6 @@ void funKeyboard(unsigned char key, int x, int y) {
             if(rotGarra <= 70) {
                 rotGarra += 0.5;
             }
-            break;
-        default: extensionSoporteY = 0.0f;
             break;
     }
     glutPostRedisplay();
