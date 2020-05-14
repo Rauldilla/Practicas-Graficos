@@ -58,6 +58,7 @@ Texture textureEmissive;
 Texture textureNoEmissive;
 Texture textureLights;
 Texture textureGlass;
+Texture textureIron;
 
 // Viewport
 int w = 600;
@@ -86,9 +87,6 @@ Light lightP[NLP];
 Light lightF[NLF];
 Material matCyanPlastic;
 Material matCopper;
-Textures texCube;
-Textures texWindow;
-Textures texPlano;
 Textures texLuz;
 Textures texCristal;
 
