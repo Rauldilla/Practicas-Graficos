@@ -56,11 +56,6 @@ Model modelCono;
 // Texturas
 Texture textureEmissive;
 Texture textureNoEmissive;
-Texture textureCubeDiffuse;
-Texture textureCubeSpecular;
-Texture textureWallDiffuse;
-Texture textureWallSpecular;
-Texture textureWallNormal;
 Texture textureLights;
 Texture textureGlass;
 
@@ -161,11 +156,6 @@ void funInit() {
     // Texturas
     textureEmissive.initTexture("resources/textures/imgEmissive.png");
     textureNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
-    textureCubeDiffuse.initTexture("resources/textures/imgCubeDiffuse.png");
-    textureCubeSpecular.initTexture("resources/textures/imgCubeSpecular.png");
-    textureWallDiffuse.initTexture("resources/textures/imgWallDiffuse.png");
-    textureWallSpecular.initTexture("resources/textures/imgWallSpecular.png");
-    textureWallNormal.initTexture("resources/textures/imgWallNormal.png");
     textureLights.initTexture("resources/textures/imgLuces.png");
     textureGlass.initTexture("resources/textures/imgGlass.png");
 
@@ -222,18 +212,6 @@ void funInit() {
     matCopper.specular = glm::vec4(0.256777f, 0.137622f, 0.086014f, 1.0f);
     matCopper.emissive = glm::vec4(0.0, 0.0, 0.0, 1.0);
     matCopper.shininess = 12.8f;
-
-    texCube.diffuse = textureCubeDiffuse.getTexture();
-    texCube.specular = textureCubeSpecular.getTexture();
-    texCube.emissive = textureEmissive.getTexture();
-    texCube.normal = 0;
-    texCube.shininess = 10.0;
-
-    texPlano.diffuse = textureWallDiffuse.getTexture();
-    texPlano.specular = textureWallSpecular.getTexture();
-    texPlano.emissive = textureNoEmissive.getTexture();
-    texPlano.normal = textureWallNormal.getTexture();
-    texPlano.shininess = 51.2;
 
     texLuz.diffuse = textureLights.getTexture();
     texLuz.specular = textureLights.getTexture();
