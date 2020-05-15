@@ -78,8 +78,8 @@ float rotGarra = 70;
 float rotGancho = 0;
 float movX = 0;
 float movZ = 0;
-float alphaX = 0.0;
-float alphaY = -0.174533;
+float alphaX = 0.5;
+float alphaY = 0.2;
 bool rotActivada = true;
 
 // Luces y materiales
