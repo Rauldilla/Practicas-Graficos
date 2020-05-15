@@ -526,6 +526,8 @@ void funTimer(int ignore) {
     
     rotGancho += 0.5;
     
+    
+    
     glutPostRedisplay();
     glutTimerFunc(speed, funTimer, 0);
 
