@@ -69,6 +69,7 @@ int h = 600;
 
 // Animaciones
 GLint speed = 20;
+GLint speedLights = 0;
 float fovy = 60.0;
 float rotX = 0.0;
 float rotY = 0.0;
@@ -526,7 +527,44 @@ void funTimer(int ignore) {
     
     rotGancho += 0.5;
     
-    
+    speedLights += speed;
+    if(speedLights == 500) {
+        speedLights = 0;
+        
+        if(lightP[0].diffuse != glm::vec3(0.0)) {
+            lightP[1].ambient = glm::vec3(1.0, 0.0, 0.0);
+            lightP[1].diffuse = glm::vec3(1.0, 0.0, 0.0);
+            lightP[1].specular = glm::vec3(1.0, 0.0, 0.0);
+
+            lightP[3].ambient = glm::vec3(1.0, 0.0, 0.0);
+            lightP[3].diffuse = glm::vec3(1.0, 0.0, 0.0);
+            lightP[3].specular = glm::vec3(1.0, 0.0, 0.0);
+
+            lightP[0].ambient = glm::vec3(0.0);
+            lightP[0].diffuse = glm::vec3(0.0);
+            lightP[0].specular = glm::vec3(0.0);
+
+            lightP[2].ambient = glm::vec3(0.0);
+            lightP[2].diffuse = glm::vec3(0.0);
+            lightP[2].specular = glm::vec3(0.0);
+        } else {
+            lightP[0].ambient = glm::vec3(0.0, 0.0, 1.0);
+            lightP[0].diffuse = glm::vec3(0.0, 0.0, 1.0);
+            lightP[0].specular = glm::vec3(0.0, 0.0, 1.0);
+
+            lightP[2].ambient = glm::vec3(0.0, 0.0, 1.0);
+            lightP[2].diffuse = glm::vec3(0.0, 0.0, 1.0);
+            lightP[2].specular = glm::vec3(0.0, 0.0, 1.0);
+
+            lightP[1].ambient = glm::vec3(0.0);
+            lightP[1].diffuse = glm::vec3(0.0);
+            lightP[1].specular = glm::vec3(0.0);
+
+            lightP[3].ambient = glm::vec3(0.0);
+            lightP[3].diffuse = glm::vec3(0.0);
+            lightP[3].specular = glm::vec3(0.0);
+        }
+    }
     
     glutPostRedisplay();
     glutTimerFunc(speed, funTimer, 0);
