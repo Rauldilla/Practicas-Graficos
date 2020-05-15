@@ -57,6 +57,8 @@ Model modelCono;
 Texture textureEmissive;
 Texture textureNoEmissive;
 Texture textureLights;
+Texture textureRedLights;
+Texture textureBlueLights;
 Texture textureGlass;
 Texture textureIron;
 Texture textureToyStory;
@@ -80,7 +82,7 @@ float alphaY = -0.174533;
 
 // Luces y materiales
 #define   NLD 1
-#define   NLP 1
+#define   NLP 4
 #define   NLF 2
 Light lightG;
 Light lightD[NLD];
@@ -90,6 +92,8 @@ Material matCyanPlastic;
 Material matBrass;
 Material matRedRubber;
 Textures texLuz;
+Textures texLuzRoja;
+Textures texLuzAzul;
 Textures texCristal;
 Textures texIron;
 Textures texToyStory;
@@ -159,6 +163,8 @@ void funInit() {
     textureEmissive.initTexture("resources/textures/imgEmissive.png");
     textureNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
     textureLights.initTexture("resources/textures/imgLuces.png");
+    textureRedLights.initTexture("resources/textures/imgLucesRojas.png");
+    textureBlueLights.initTexture("resources/textures/imgLucesAzules.png");
     textureGlass.initTexture("resources/textures/imgGlass.png");
     textureIron.initTexture("resources/textures/imgIron.png");
     textureToyStory.initTexture("resources/textures/imgToyStory.png");
@@ -173,13 +179,37 @@ void funInit() {
     lightD[0].specular = glm::vec3(0.7, 0.7, 0.7);
 
     // Luces posicionales
-    lightP[0].position = glm::vec3(0.0, 3.0, 3.0);
-    lightP[0].ambient = glm::vec3(0.2, 0.2, 0.2);
-    lightP[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
-    lightP[0].specular = glm::vec3(0.9, 0.9, 0.9);
+    lightP[0].position = glm::vec3(2.9, 0.1, 2.9);
+    lightP[0].ambient = glm::vec3(0.0, 0.0, 1.0);
+    lightP[0].diffuse = glm::vec3(0.0, 0.0, 1.0);
+    lightP[0].specular = glm::vec3(0.0, 0.0, 1.0);
     lightP[0].c0 = 1.00;
     lightP[0].c1 = 0.22;
     lightP[0].c2 = 0.20;
+    
+    lightP[1].position = glm::vec3(-2.9, 0.1, 2.9);
+    lightP[1].ambient = glm::vec3(1.0, 0.0, 0.0);
+    lightP[1].diffuse = glm::vec3(1.0, 0.0, 0.0);
+    lightP[1].specular = glm::vec3(1.0, 0.0, 0.0);
+    lightP[1].c0 = 1.00;
+    lightP[1].c1 = 0.22;
+    lightP[1].c2 = 0.20;
+    
+    lightP[2].position = glm::vec3(-2.9, 0.1, -2.9);
+    lightP[2].ambient = glm::vec3(0.0, 0.0, 1.0);
+    lightP[2].diffuse = glm::vec3(0.0, 0.0, 1.0);
+    lightP[2].specular = glm::vec3(0.0, 0.0, 1.0);
+    lightP[2].c0 = 1.00;
+    lightP[2].c1 = 0.22;
+    lightP[2].c2 = 0.20;
+    
+    lightP[3].position = glm::vec3(2.9, 0.1, -2.9);
+    lightP[3].ambient = glm::vec3(1.0, 0.0, 0.0);
+    lightP[3].diffuse = glm::vec3(1.0, 0.0, 0.0);
+    lightP[3].specular = glm::vec3(1.0, 0.0, 0.0);
+    lightP[3].c0 = 1.00;
+    lightP[3].c1 = 0.22;
+    lightP[3].c2 = 0.20;
 
     // Luces focales
     lightF[0].position = glm::vec3(-2.0, 2.0, 5.0);
@@ -228,6 +258,18 @@ void funInit() {
     texLuz.emissive = textureNoEmissive.getTexture();
     texLuz.normal = 0;
     texLuz.shininess = 10.0;
+    
+    texLuzRoja.diffuse = textureRedLights.getTexture();
+    texLuzRoja.specular = textureRedLights.getTexture();
+    texLuzRoja.emissive = textureNoEmissive.getTexture();
+    texLuzRoja.normal = 0;
+    texLuzRoja.shininess = 10.0;
+    
+    texLuzAzul.diffuse = textureBlueLights.getTexture();
+    texLuzAzul.specular = textureBlueLights.getTexture();
+    texLuzAzul.emissive = textureNoEmissive.getTexture();
+    texLuzAzul.normal = 0;
+    texLuzAzul.shininess = 10.0;
 
     texCristal.diffuse = textureGlass.getTexture();
     texCristal.specular = textureGlass.getTexture();
@@ -311,10 +353,15 @@ void setLights(glm::mat4 P, glm::mat4 V) {
     for (int i = 0; i < NLD; i++) shaders.setLight("ulightD[" + toString(i) + "]", lightD[i]);
     for (int i = 0; i < NLP; i++) shaders.setLight("ulightP[" + toString(i) + "]", lightP[i]);
     for (int i = 0; i < NLF; i++) shaders.setLight("ulightF[" + toString(i) + "]", lightF[i]);
-
+    
     for (int i = 0; i < NLP; i++) {
-        glm::mat4 M = glm::scale(glm::translate(I, lightP[i].position), glm::vec3(0.1));
-        drawObjectTex(modelEsfera, texLuz, P, V, M);
+        glm::mat4 M = glm::scale(glm::translate(I, lightP[i].position), glm::vec3(0.05));
+        
+        if(i % 2 == 0) {
+            drawObjectTex(modelEsfera, texLuzAzul, P, V, M);
+        } else {
+            drawObjectTex(modelEsfera, texLuzRoja, P, V, M);
+        }
     }
 
     for (int i = 0; i < NLF; i++) {
