@@ -110,7 +110,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(w, h);
     glutInitWindowPosition(50, 50);
-    glutCreateWindow("Práctica 4");
+    glutCreateWindow("Practica 4");
 
     // Inicializamos GLEW
     glewExperimental = GL_TRUE;
@@ -588,12 +588,6 @@ void funSpecial(int key, int x, int y) {
                 movX -= 0.1;
                 lightF[0].direction -= glm::vec3(0.1, 0.0, 0.0);
                 lightF[1].direction -= glm::vec3(0.1, 0.0, 0.0);
-                /*TODO
-                 * if(lightF[0].innerCutOff > 0 && movX <= 0){
-                    lightF[0].innerCutOff -= 1.0;
-                    lightF[0].outerCutOff -= 1.0;
-                }
-                std::cout << "innerCutOff: " << lightF[0].innerCutOff << "\n";*/
             }
             break;
         case GLUT_KEY_RIGHT:
@@ -601,11 +595,6 @@ void funSpecial(int key, int x, int y) {
                 movX += 0.1;
                 lightF[0].direction += glm::vec3(0.1, 0.0, 0.0);
                 lightF[1].direction += glm::vec3(0.1, 0.0, 0.0);
-                /*TODO
-                 * if(lightF[0].innerCutOff <= 13 && movX > 0){
-                    lightF[0].innerCutOff += 1.0;
-                    lightF[0].outerCutOff += 1.0;
-                }*/
             }
     }
     glutPostRedisplay();
