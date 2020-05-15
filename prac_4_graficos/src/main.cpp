@@ -80,6 +80,7 @@ float movX = 0;
 float movZ = 0;
 float alphaX = 0.0;
 float alphaY = -0.174533;
+bool rotActivada = true;
 
 // Luces y materiales
 #define   NLD 1
@@ -230,7 +231,7 @@ void funInit() {
     lightF[1].diffuse = glm::vec3(0.9, 0.9, 0.9);
     lightF[1].specular = glm::vec3(0.9, 0.9, 0.9);
     lightF[1].innerCutOff = 13.0;
-    lightF[1].outerCutOff = lightF[0].innerCutOff + 2.0;
+    lightF[1].outerCutOff = lightF[1].innerCutOff + 2.0;
     lightF[1].c0 = 1.000;
     lightF[1].c1 = 0.090;
     lightF[1].c2 = 0.032;
@@ -364,12 +365,6 @@ void setLights(glm::mat4 P, glm::mat4 V) {
             drawObjectTex(modelEsfera, texLuzRoja, P, V, M);
         }
     }
-
-    for (int i = 0; i < NLF; i++) {
-        glm::mat4 M = glm::scale(glm::translate(I, lightF[i].position), glm::vec3(0.025));
-        drawObjectTex(modelEsfera, texLuz, P, V, M);
-    }
-
 }
 
 void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -525,7 +520,7 @@ void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
 void funTimer(int ignore) {
     
-    rotGancho += 0.5;
+    if(rotActivada) rotGancho += 0.5;
     
     speedLights += speed;
     if(speedLights == 500) {
@@ -593,6 +588,12 @@ void funSpecial(int key, int x, int y) {
                 movX -= 0.1;
                 lightF[0].direction -= glm::vec3(0.1, 0.0, 0.0);
                 lightF[1].direction -= glm::vec3(0.1, 0.0, 0.0);
+                /*TODO
+                 * if(lightF[0].innerCutOff > 0 && movX <= 0){
+                    lightF[0].innerCutOff -= 1.0;
+                    lightF[0].outerCutOff -= 1.0;
+                }
+                std::cout << "innerCutOff: " << lightF[0].innerCutOff << "\n";*/
             }
             break;
         case GLUT_KEY_RIGHT:
@@ -600,6 +601,11 @@ void funSpecial(int key, int x, int y) {
                 movX += 0.1;
                 lightF[0].direction += glm::vec3(0.1, 0.0, 0.0);
                 lightF[1].direction += glm::vec3(0.1, 0.0, 0.0);
+                /*TODO
+                 * if(lightF[0].innerCutOff <= 13 && movX > 0){
+                    lightF[0].innerCutOff += 1.0;
+                    lightF[0].outerCutOff += 1.0;
+                }*/
             }
     }
     glutPostRedisplay();
@@ -629,6 +635,8 @@ void funKeyboard(unsigned char key, int x, int y) {
                 rotGarra += 0.5;
             }
             break;
+        case 'g':
+            rotActivada = !rotActivada;
     }
     glutPostRedisplay();
 
