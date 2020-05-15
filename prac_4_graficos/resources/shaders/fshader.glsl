@@ -31,7 +31,7 @@ struct Textures {
 
 #define NLD 1
 #define NLP 4
-#define NLF 1
+#define NLF 2
 
 uniform vec3     ucpos;
 uniform Light    ulightG;

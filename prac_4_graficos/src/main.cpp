@@ -213,24 +213,24 @@ void funInit() {
     lightP[3].c2 = 0.20;
 
     // Luces focales
-    lightF[0].position = glm::vec3(-2.0, 2.0, 5.0);
-    lightF[0].direction = glm::vec3(2.0, -2.0, -5.0);
+    lightF[0].position = glm::vec3(3.5, 2.0, 0.0);
+    lightF[0].direction = glm::vec3(-3, -2.0, 0.0);
     lightF[0].ambient = glm::vec3(0.2, 0.2, 0.2);
     lightF[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
     lightF[0].specular = glm::vec3(0.9, 0.9, 0.9);
-    lightF[0].innerCutOff = 10.0;
-    lightF[0].outerCutOff = lightF[0].innerCutOff + 5.0;
+    lightF[0].innerCutOff = 13.0;
+    lightF[0].outerCutOff = lightF[0].innerCutOff + 2.0;
     lightF[0].c0 = 1.000;
     lightF[0].c1 = 0.090;
     lightF[0].c2 = 0.032;
 
-    lightF[1].position = glm::vec3(2.0, 2.0, 5.0);
-    lightF[1].direction = glm::vec3(-2.0, -2.0, -5.0);
+    lightF[1].position = glm::vec3(-3.5, 2.0, 0.0);
+    lightF[1].direction = glm::vec3(3, -2.0, 0.0);
     lightF[1].ambient = glm::vec3(0.2, 0.2, 0.2);
     lightF[1].diffuse = glm::vec3(0.9, 0.9, 0.9);
     lightF[1].specular = glm::vec3(0.9, 0.9, 0.9);
-    lightF[1].innerCutOff = 5.0;
-    lightF[1].outerCutOff = lightF[1].innerCutOff + 1.0;
+    lightF[1].innerCutOff = 13.0;
+    lightF[1].outerCutOff = lightF[0].innerCutOff + 2.0;
     lightF[1].c0 = 1.000;
     lightF[1].c1 = 0.090;
     lightF[1].c2 = 0.032;
@@ -574,13 +574,33 @@ void funTimer(int ignore) {
 void funSpecial(int key, int x, int y) {
 
     switch (key) {
-        case GLUT_KEY_UP: if(movZ < 2) movZ += 0.1;
+        case GLUT_KEY_UP:
+            if(movZ > -2) {
+                movZ -= 0.1;
+                lightF[0].direction -= glm::vec3(0.0, 0.0, 0.1);
+                lightF[1].direction -= glm::vec3(0.0, 0.0, 0.1);
+            }
             break;
-        case GLUT_KEY_DOWN: if(movZ > -2) movZ -= 0.1;
+        case GLUT_KEY_DOWN:
+            if(movZ < 2) {
+                movZ += 0.1;
+                lightF[0].direction += glm::vec3(0.0, 0.0, 0.1);
+                lightF[1].direction += glm::vec3(0.0, 0.0, 0.1);
+            }
             break;
-        case GLUT_KEY_LEFT: if(movX > -2) movX -= 0.1;
+        case GLUT_KEY_LEFT:
+            if(movX > -2) {
+                movX -= 0.1;
+                lightF[0].direction -= glm::vec3(0.1, 0.0, 0.0);
+                lightF[1].direction -= glm::vec3(0.1, 0.0, 0.0);
+            }
             break;
-        case GLUT_KEY_RIGHT: if(movX < 2) movX += 0.1;
+        case GLUT_KEY_RIGHT:
+            if(movX < 2) {
+                movX += 0.1;
+                lightF[0].direction += glm::vec3(0.1, 0.0, 0.0);
+                lightF[1].direction += glm::vec3(0.1, 0.0, 0.0);
+            }
     }
     glutPostRedisplay();
 
