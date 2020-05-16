@@ -332,14 +332,10 @@ void funDisplay() {
     setLights(P, V);
 
     // Dibujar escena
-    // Para el movimiento en x e y del gancho
-    glm::mat4 TGancho = glm::translate(I, glm::vec3(movX, 0.0, movZ));
-    // TODO Ojo matrices comunes gancho y ventanas
-    //glm::mat4 T = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
+    glm::mat4 TGancho = glm::translate(I, glm::vec3(movX, 0.0, movZ));  // Para el movimiento en x e y del gancho
     drawSuelo(P, V, I);
     
-    // Colocación de gancho y ventana para que no atraviese el suelo
-    glm::mat4 TWindow = glm::translate(I, glm::vec3(0.0, 0.72, 0.0));
+    glm::mat4 TWindow = glm::translate(I, glm::vec3(0.0, 0.72, 0.0));   // Colocación de gancho y ventana para que no atraviese el suelo
     
     drawGancho(P, V, I * TGancho * TWindow);
     drawVentana(P, V, I * TWindow);
@@ -409,13 +405,12 @@ void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     float rotPlane = 180;
 
-    // TODO cambiar cosas de estas (se llama ventana, no suelo)
-    /* Configuración del suelo */
+    /* Configuración del ventana */
     glm::mat4 SWindow = glm::scale(I, glm::vec3(X_PLANE, 1.0, Z_PLANE));
     glm::mat4 TWindow = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
     glm::mat4 RSecond_Window = glm::rotate(I, glm::radians(rotPlane), glm::vec3(0.0, 0.0, 1.0));
 
-    /* Dibuja el suelo */
+    /* Dibuja el ventana */
     glDepthMask(GL_FALSE);
     drawObjectTex(modelPlano, texCristal, P, V, M * SWindow * TWindow);
     drawObjectTex(modelPlano, texCristal, P, V, M * SWindow * TWindow * RSecond_Window);
@@ -440,19 +435,18 @@ void drawBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     // TODO Intentar hacer un TBase en vez de dos
 
     glm::mat4 SBase = glm::scale(I, glm::vec3(BASE_SIZE, 0.1, BASE_SIZE));
-    glm::mat4 TBase = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
+    glm::mat4 TBase = glm::translate(I, glm::vec3(0.0, 2.39, 0.0));
     // TODO Mirar textura predominante (1.01 a 1.0)
     glm::mat4 TBase_Colocacion = glm::translate(I, glm::vec3(0.0, -1.01, 0.0));
 
-    drawObjectMat(modelCubo, matCyanPlastic, P, V, M * TBase * SBase * TBase_Colocacion);
+    drawObjectMat(modelCubo, matCyanPlastic, P, V, M * TBase * SBase);
 }
 
 void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 SSoporte = glm::scale(I, glm::vec3(0.15, 0.5, 0.15));
-    glm::mat4 TSoporte = glm::translate(I, glm::vec3(0.0, 2.5, 0.0));
-    glm::mat4 TSoporte_Colocacion = glm::translate(I, glm::vec3(0.0, -1.01, 0.0));
+    glm::mat4 TSoporte = glm::translate(I, glm::vec3(0.0, 1.8, 0.0));
 
-    drawObjectMat(modelCilindro, matBrass, P, V, M * TSoporte * SSoporte * TSoporte_Colocacion);
+    drawObjectMat(modelCilindro, matBrass, P, V, M * TSoporte * SSoporte);
 }
 
 // TODO Cambiar nombre que englobe articulaciones y garras
