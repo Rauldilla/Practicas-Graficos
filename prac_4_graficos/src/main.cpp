@@ -37,8 +37,9 @@ void setLights(glm::mat4 P, glm::mat4 V);
 
 void drawSuelo(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M);
-void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawMaquina(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawBase(glm::mat4 P, glm::mat4 V, glm::mat4 M);
+void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M);
 void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M);
@@ -337,7 +338,7 @@ void funDisplay() {
     
     glm::mat4 TWindow = glm::translate(I, glm::vec3(0.0, 0.72, 0.0));   // Colocación de gancho y ventana para que no atraviese el suelo
     
-    drawGancho(P, V, I * TGancho * TWindow);
+    drawMaquina(P, V, I * TGancho * TWindow);
     drawVentana(P, V, I * TWindow);
 
     // Intercambiamos los buffers
@@ -417,17 +418,18 @@ void drawVentana(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glDepthMask(GL_TRUE);
 }
 
-void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+void drawMaquina(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 
     // Para extender el gancho
     glm::mat4 TExtension = glm::translate(I, glm::vec3(0.0, extensionSoporteY, 0.0));
     // Para la rotación automática del gancho
     glm::mat4 RGancho = glm::rotate(I, glm::radians(rotGancho), glm::vec3(0.0, 1.0, 0.0));
 
+    // Dibujar gancho
     drawBase(P, V, M);
     drawSoporte(P, V, M);
     drawSoporte(P, V, M * TExtension);
-    drawArticulacion(P, V, M * RGancho * TExtension);
+    drawGancho(P, V, M * RGancho * TExtension);
 
 }
 
@@ -445,14 +447,11 @@ void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     drawObjectMat(modelCilindro, matBrass, P, V, M * TSoporte * SSoporte);
 }
 
-// TODO Cambiar nombre que englobe articulaciones y garras
 // TODO refactor del duro
-void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     // Articulación
-    glm::mat4 SArticulacion = glm::scale(I, glm::vec3(0.15, 0.15, 0.15));
     glm::mat4 TArticulacion = glm::translate(I, glm::vec3(0.0, 1.25, 0.0));
-
-    drawObjectTex(modelEsfera, texToyStory, P, V, M * TArticulacion * SArticulacion);
+    drawArticulacion(P, V, M * TArticulacion);
 
     // Garras
     float colocacionGarra = 90;
@@ -501,6 +500,11 @@ void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     
     drawObjectMat(modelCono, matRedRubber, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra
             * TArticulacionGarra * TPincho * RPincho * SPincho);
+}
+
+void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    glm::mat4 SArticulacion = glm::scale(I, glm::vec3(0.15, 0.15, 0.15));
+    drawObjectTex(modelEsfera, texToyStory, P, V, M * SArticulacion);
 }
 
 void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
