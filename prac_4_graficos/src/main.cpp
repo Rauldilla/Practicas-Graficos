@@ -456,30 +456,42 @@ void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     // Garras
     float colocacionGarra = 90;
     glm::mat4 R90 = glm::rotate(I, glm::radians(colocacionGarra), glm::vec3(0.0, 1.0, 0.0));
+    
+    drawGarras(P, V, M * TArticulacion);
+    drawGarras(P, V, M * R90 * TArticulacion);
+    drawGarras(P, V, M * R90 * R90 * TArticulacion);
+    drawGarras(P, V, M * R90 * R90 * R90 * TArticulacion);
+}
 
+void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    glm::mat4 SArticulacion = glm::scale(I, glm::vec3(0.15, 0.15, 0.15));
+    drawObjectTex(modelEsfera, texToyStory, P, V, M * SArticulacion);
+}
+
+void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 TGarra = glm::translate(I, glm::vec3(0.0, -1.0, -0.5));
     glm::mat4 RGarra = glm::rotate(I, glm::radians(rotGarra), glm::vec3(1.0, 0.0, 0.0));
     glm::mat4 SGarra = glm::scale(I, glm::vec3(0.1, 0.4, 0.1));
 
-    drawObjectMat(modelCubo, matBrass, P, V, M * TArticulacion * RGarra * SGarra * TGarra);
-    drawObjectMat(modelCubo, matBrass, P, V, M * R90 * TArticulacion * RGarra * SGarra * TGarra);
-    drawObjectMat(modelCubo, matBrass, P, V, M * R90 * R90 * TArticulacion * RGarra * SGarra * TGarra);
-    drawObjectMat(modelCubo, matBrass, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra * SGarra * TGarra);
+    drawObjectMat(modelCubo, matBrass, P, V, M * RGarra * SGarra * TGarra);
+    drawObjectMat(modelCubo, matBrass, P, V, M * RGarra * SGarra * TGarra);
+    drawObjectMat(modelCubo, matBrass, P, V, M * RGarra * SGarra * TGarra);
+    drawObjectMat(modelCubo, matBrass, P, V, M * RGarra * SGarra * TGarra);
 
     // Articulacion de garras
     glm::mat4 SArticulacionGarra = glm::scale(I, glm::vec3(0.1, 0.1, 0.1));
     glm::mat4 TArticulacionGarra = glm::translate(I, glm::vec3(0.0, -0.8, -0.0));
 
-    drawObjectMat(modelEsfera, matRedRubber, P, V, M * TArticulacion * RGarra
+    drawObjectMat(modelEsfera, matRedRubber, P, V, M * RGarra
             * TArticulacionGarra * SArticulacionGarra * TGarra);
     
-    drawObjectMat(modelEsfera, matRedRubber, P, V, M * R90 * TArticulacion * RGarra
+    drawObjectMat(modelEsfera, matRedRubber, P, V, M * RGarra
             * TArticulacionGarra * SArticulacionGarra * TGarra);
     
-    drawObjectMat(modelEsfera, matRedRubber, P, V, M * R90 * R90 * TArticulacion * RGarra
+    drawObjectMat(modelEsfera, matRedRubber, P, V, M * RGarra
             * TArticulacionGarra * SArticulacionGarra * TGarra);
     
-    drawObjectMat(modelEsfera, matRedRubber, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra
+    drawObjectMat(modelEsfera, matRedRubber, P, V, M * RGarra
             * TArticulacionGarra * SArticulacionGarra * TGarra);
     
     // Pinchos
@@ -489,27 +501,17 @@ void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     glm::mat4 RPincho = glm::rotate(I, glm::radians(rotPincho), glm::vec3(1.0, 0.0, 0.0));
     glm::mat4 SPincho = glm::scale(I, glm::vec3(0.0722, 0.0722, 0.0722));
     
-    drawObjectMat(modelCono, matRedRubber, P, V, M * TArticulacion * RGarra
+    drawObjectMat(modelCono, matRedRubber, P, V, M * RGarra
             * TArticulacionGarra * TPincho * RPincho * SPincho);
     
-    drawObjectMat(modelCono, matRedRubber, P, V, M * R90 * TArticulacion * RGarra
+    drawObjectMat(modelCono, matRedRubber, P, V, M * RGarra
             * TArticulacionGarra * TPincho * RPincho * SPincho);
     
-    drawObjectMat(modelCono, matRedRubber, P, V, M * R90 * R90 * TArticulacion * RGarra
+    drawObjectMat(modelCono, matRedRubber, P, V, M * RGarra
             * TArticulacionGarra * TPincho * RPincho * SPincho);
     
-    drawObjectMat(modelCono, matRedRubber, P, V, M * R90 * R90 * R90 * TArticulacion * RGarra
+    drawObjectMat(modelCono, matRedRubber, P, V, M * RGarra
             * TArticulacionGarra * TPincho * RPincho * SPincho);
-}
-
-void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-    glm::mat4 SArticulacion = glm::scale(I, glm::vec3(0.15, 0.15, 0.15));
-    drawObjectTex(modelEsfera, texToyStory, P, V, M * SArticulacion);
-}
-
-void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-    
-    // TODO drawGarras
 }
 
 void funTimer(int ignore) {
