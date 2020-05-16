@@ -70,17 +70,20 @@ int h = 600;
 
 // Animaciones
 GLint speed = 20;
-GLint speedLights = 0;
+GLint speedLights = 0;  // Para la velocidad de las luces
+
 float fovy = 60.0;
-float rotX = 0.0;
-float rotY = 0.0;
-float extensionSoporteY = 0.0;
+
 float rotGarra = 70;
 float rotGancho = 0;
+
+float extensionSoporteY = 0.0;
 float movX = 0;
 float movZ = 0;
+
 float alphaX = 0.5;
 float alphaY = 0.2;
+
 bool rotActivada = true;
 
 // Luces y materiales
@@ -447,7 +450,6 @@ void drawSoporte(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     drawObjectMat(modelCilindro, matBrass, P, V, M * TSoporte * SSoporte);
 }
 
-// TODO refactor del duro
 void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     // Articulación
     glm::mat4 TArticulacion = glm::translate(I, glm::vec3(0.0, 1.25, 0.0));
@@ -469,6 +471,7 @@ void drawArticulacion(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 }
 
 void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
+    // Soportes de garras
     glm::mat4 TGarra = glm::translate(I, glm::vec3(0.0, -1.0, -0.5));
     glm::mat4 RGarra = glm::rotate(I, glm::radians(rotGarra), glm::vec3(1.0, 0.0, 0.0));
     glm::mat4 SGarra = glm::scale(I, glm::vec3(0.1, 0.4, 0.1));
@@ -478,7 +481,7 @@ void drawGarras(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
     drawObjectMat(modelCubo, matBrass, P, V, M * RGarra * SGarra * TGarra);
     drawObjectMat(modelCubo, matBrass, P, V, M * RGarra * SGarra * TGarra);
 
-    // Articulacion de garras
+    // Articulaciones de garras
     glm::mat4 SArticulacionGarra = glm::scale(I, glm::vec3(0.1, 0.1, 0.1));
     glm::mat4 TArticulacionGarra = glm::translate(I, glm::vec3(0.0, -0.8, -0.0));
 
@@ -518,11 +521,12 @@ void funTimer(int ignore) {
     
     if(rotActivada) rotGancho += 0.5;
     
-    speedLights += speed;
+    speedLights += speed;            // Incrementamos tiempo (contador)
     if(speedLights == 500) {
-        speedLights = 0;
+        speedLights = 0;             // Reiniciamos tiempo (contador)
         
         if(lightP[0].diffuse != glm::vec3(0.0)) {
+             // Enciende luces rojas y apaga azules
             lightP[1].ambient = glm::vec3(1.0, 0.0, 0.0);
             lightP[1].diffuse = glm::vec3(1.0, 0.0, 0.0);
             lightP[1].specular = glm::vec3(1.0, 0.0, 0.0);
@@ -539,6 +543,7 @@ void funTimer(int ignore) {
             lightP[2].diffuse = glm::vec3(0.0);
             lightP[2].specular = glm::vec3(0.0);
         } else {
+            // Enciende luces rojas y apaga azules
             lightP[0].ambient = glm::vec3(0.0, 0.0, 1.0);
             lightP[0].diffuse = glm::vec3(0.0, 0.0, 1.0);
             lightP[0].specular = glm::vec3(0.0, 0.0, 1.0);
