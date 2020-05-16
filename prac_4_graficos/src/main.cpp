@@ -432,12 +432,8 @@ void drawGancho(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
 }
 
 void drawBase(glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-    // TODO Intentar hacer un TBase en vez de dos
-
     glm::mat4 SBase = glm::scale(I, glm::vec3(BASE_SIZE, 0.1, BASE_SIZE));
     glm::mat4 TBase = glm::translate(I, glm::vec3(0.0, 2.39, 0.0));
-    // TODO Mirar textura predominante (1.01 a 1.0)
-    glm::mat4 TBase_Colocacion = glm::translate(I, glm::vec3(0.0, -1.01, 0.0));
 
     drawObjectMat(modelCubo, matCyanPlastic, P, V, M * TBase * SBase);
 }
